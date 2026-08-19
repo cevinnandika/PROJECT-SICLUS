@@ -51,7 +51,7 @@ function App() {
     const timestamp = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
     setInspections((prev) => [{ ...report, timestamp }, ...prev]);
     setTripStatus("sedang_berlangsung");
-    setCurrentPage("beranda"); // Go back to dashboard showing active trip stepper
+    setCurrentPage("beranda");
   };
 
   // Inspection failed -> reported issues
@@ -59,15 +59,15 @@ function App() {
     const timestamp = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
     setInspections((prev) => [{ ...report, timestamp }, ...prev]);
     setTripStatus("belum_mulai");
-    setCurrentPage("ringkasan"); // View logs which shows issues
+    setCurrentPage("ringkasan");
     setPreparationData(null);
   };
 
   // Passenger logging finish -> daily log summary view
   const handleTripSubmit = (report) => {
     setTrips((prev) => [report, ...prev]);
-    setTripStatus("belum_mulai"); // Reset trip cycle
-    setCurrentPage("ringkasan"); // Open Daily summary log screen (Image 4)
+    setTripStatus("belum_mulai");
+    setCurrentPage("ringkasan");
     setTripData(null);
   };
 
@@ -78,14 +78,27 @@ function App() {
     setTripStatus("belum_mulai");
   };
 
+  // ⚡ MAPPING KLIK MENU SIDEBAR & BOTTOM NAV
+  const handleMenuNavigation = (menuId) => {
+    if (menuId === 'laporan') {
+      setCurrentPage('persiapan');
+    } else if (menuId === 'riwayat') {
+      setCurrentPage('ringkasan');
+    } else if (menuId === 'rekap') {
+      setCurrentPage('rekap'); // 🔥 Routing khusus Admin
+    } else if (menuId === 'akun') {
+      setCurrentPage('akun'); 
+    } else {
+      setCurrentPage(menuId);
+    }
+  };
+
   // Stepper screen switcher
   const renderPage = () => {
-    // Kalau belum login, langsung tembak komponen Login aja!
     if (!user) {
       return <Login onLoginSuccess={handleLogin} />;
     }
 
-    // Kalau udah login, baru masuk ke routing halaman aplikasi
     switch (currentPage) {
       case "beranda":
         return (
@@ -102,7 +115,6 @@ function App() {
           />
         );
 
-      // PRE-CHECK INSPECTION FLOW
       case "persiapan":
         return (
           <Persiapan
@@ -134,7 +146,6 @@ function App() {
         }
         return <Kendala data={preparationData} onSubmit={handleInspectionIssues} />;
 
-      // ARRIVAL & PASSENGER INPUT FLOW
       case "titikstart":
         return (
           <TitikStart
@@ -151,9 +162,56 @@ function App() {
         }
         return <Penumpang tripData={tripData} onSubmit={handleTripSubmit} />;
 
-      // DAILY REKAPITULASI
       case "ringkasan":
         return <RingkasanHarian inspections={inspections} trips={trips} onResetAllLogs={handleResetLogs} />;
+
+      // 🔥 HALAMAN REKAP (KHUSUS ADMIN) 🔥
+      case "rekap":
+        return (
+          <div className="flex flex-col items-center justify-center p-10 mt-10 animate-[fadeIn_0.5s_ease-out]">
+            <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
+              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-black text-[#00206B] tracking-tight uppercase">Data Rekapitulasi</h2>
+            <p className="text-slate-500 mt-3 text-center max-w-md font-medium leading-relaxed">
+              Halaman ini digunakan untuk melihat rekapitulasi performa dan data pengemudi. Hanya dapat diakses oleh Admin.
+            </p>
+          </div>
+        );
+
+      // 🔥 HALAMAN AKUN + TOMBOL LOGOUT 🔥
+      case "akun":
+        return (
+          <div className="flex flex-col items-center justify-center p-6 mt-6 space-y-6 animate-[fadeIn_0.5s_ease-out]">
+            {/* Foto Profil Circle */}
+            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white shadow-xl border-4 border-white">
+              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            
+            {/* Nama & Role */}
+            <div className="text-center">
+              <h2 className="text-3xl font-black text-[#00206B] uppercase tracking-tight">{user?.name || 'Pengemudi'}</h2>
+              <p className="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">{user?.id || 'ID Tidak Diketahui'} • {user?.role || 'Pengemudi'}</p>
+            </div>
+            
+            {/* Action Card: Tombol Keluar */}
+            <div className="w-full max-w-sm mt-8 p-6 bg-white rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col gap-4">
+              <button 
+                onClick={handleLogout}
+                className="w-full relative overflow-hidden bg-red-50 text-red-600 font-bold py-4 px-4 rounded-2xl border border-red-100 hover:bg-red-500 hover:text-white hover:border-red-500 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group"
+              >
+                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>KELUAR APLIKASI</span>
+              </button>
+            </div>
+          </div>
+        );
 
       default:
         return <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} />;
@@ -166,17 +224,17 @@ function App() {
       case "beranda":
         return "SICLUS";
       case "persiapan":
-        return "Laporan";
       case "inspeksi":
-        return "Laporan";
       case "kendala":
-        return "Laporan";
       case "titikstart":
-        return "Laporan";
       case "penumpang":
         return "Laporan";
       case "ringkasan":
-        return "SICLUS";
+        return "Riwayat";
+      case "rekap":
+        return "Rekap Laporan"; // 🔥 Judul Header untuk Rekap
+      case "akun":
+        return "Profil Akun"; 
       default:
         return "SICLUS";
     }
@@ -189,30 +247,32 @@ function App() {
       setCurrentPage("inspeksi");
     } else if (currentPage === "penumpang") {
       setCurrentPage("titikstart");
+    } else if (currentPage === "akun" || currentPage === "rekap") {
+      setCurrentPage("beranda"); 
     } else {
       setCurrentPage("beranda");
     }
   };
 
   return (
-    // Container Utama (Full Screen Web)
-    <div className="min-h-screen w-full bg-[#F5F7FB] font-sans antialiased">
+    <div className="min-h-screen w-full bg-[#131314] font-sans antialiased overflow-hidden">
       {!user ? (
-        /* =========================================
-           TAMPILAN 1: WEB FULL SCREEN UNTUK LOGIN
-           ========================================= */
         renderPage()
       ) : (
-        /* =========================================
-           TAMPILAN 2: MOBILE VIEW UNTUK APP SUPIR
-           ========================================= */
-        <div className="flex justify-center items-start min-h-screen bg-slate-200">
-          <MobileLayout title={getPageTitle()} onBack={currentPage !== "beranda" && currentPage !== "ringkasan" ? handleBack : null}>
-            {renderPage()}
-          </MobileLayout>
-
-          <BottomNav activeTab={currentPage} setActiveTab={setCurrentPage} />
-        </div>
+        <MobileLayout 
+          user={user} // 🔥 KIRIM DATA USER KE LAYOUT BIAR BISA FILTER MENU
+          title={getPageTitle()} 
+          onBack={currentPage !== "beranda" && currentPage !== "ringkasan" ? handleBack : null}
+          activeMenu={currentPage}
+          onMenuClick={handleMenuNavigation}
+        >
+          {renderPage()}
+          <BottomNav 
+            user={user} // 🔥 KIRIM DATA USER KE BOTTOM NAV
+            activeTab={currentPage} 
+            setActiveTab={setCurrentPage} 
+          />
+        </MobileLayout>
       )}
     </div>
   );
