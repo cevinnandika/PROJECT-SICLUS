@@ -10,7 +10,151 @@ import TitikStart from "./pages/perjalanan/TitikStart";
 import Penumpang from "./pages/perjalanan/Penumpang";
 import RingkasanHarian from "./pages/RingkasanHarian";
 
-//  RIWAYAT DRIVER COMPONENT (Notifikasi-style)
+// 🔥 PROFIL AKUN COMPONENT (FITUR GANTI FOTO ALA STEAM UDAH NYALA!)
+const ProfilAkun = ({ user, onLogout }) => {
+  // 1. State buat nyimpen foto sementara & Pop-up
+  const [profilePic, setProfilePic] = React.useState(null); 
+  const [toastMsg, setToastMsg] = React.useState('');
+  
+  // 2. Ref buat nyambungin tombol kamera ke hidden input
+  const fileInputRef = React.useRef(null);
+
+  const dummyTrayek = user?.trayek || 'Trayek A';
+  const dummyBus = user?.bus || 'Bus 07 (S 1772 SP)';
+
+  // 3. Fungsi pas foto dipilih dari galeri
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Bikin URL sementara buat nampilin foto di frontend (langsung ganti!)
+      const imageUrl = URL.createObjectURL(file);
+      setProfilePic(imageUrl);
+      
+      // Kasih notif sukses!
+      setToastMsg('Foto profil berhasil diubah! 📸 (Preview Lokal)');
+      setTimeout(() => setToastMsg(''), 3000);
+    }
+  };
+
+  // 4. Fungsi pas tombol kamera diklik (manggil input rahasia)
+  const handleCameraClick = () => {
+    fileInputRef.current.click();
+  };
+
+  return (
+    <div className="space-y-6 text-left max-w-3xl mx-auto pb-6 relative">
+      
+      {/* TOAST NOTIFICATION */}
+      {toastMsg && (
+        <div className="fixed top-10 left-1/2 transform -translate-x-1/2 z-[100] animate-[fadeIn_0.3s_ease-out]">
+          <div className="bg-[#00206B] text-white px-6 py-3.5 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,32,107,0.5)] flex items-center gap-3 border border-blue-400/30">
+            <svg className="w-5 h-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="font-extrabold text-sm tracking-wide">{toastMsg}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-1">
+        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Profil Akun</h2>
+        <p className="text-sm text-slate-400 font-semibold mt-0.5">Kelola informasi data diri pengemudi</p>
+      </div>
+
+      <div className="bg-white border border-slate-100 rounded-3xl shadow-sm relative overflow-hidden">
+         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-[#00206B] to-blue-500"></div>
+
+         <div className="relative z-10 flex flex-col items-center mt-12 px-6 pb-8">
+            <div className="relative">
+              <div className="w-28 h-28 rounded-full bg-white p-1.5 shadow-lg">
+                <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
+                   {/* 🔥 5. LOGIC NAMPILIN FOTO: Kalo ada foto tampilin, kalo gaada tampilin icon default */}
+                   {profilePic ? (
+                     <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                   ) : (
+                     <svg className="w-14 h-14 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                     </svg>
+                   )}
+                </div>
+              </div>
+              
+              {/* 🔥 6. INPUT RAHASIA! (Disembunyiin pake class 'hidden') */}
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                ref={fileInputRef} 
+                onChange={handlePhotoChange} 
+              />
+
+              {/* Tombol Kamera yang kelihatan */}
+              <button 
+                onClick={handleCameraClick}
+                className="absolute bottom-1 right-1 bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-transform text-[#00206B] border border-slate-100 cursor-pointer active:scale-95"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+
+            <h3 className="mt-4 text-2xl font-black text-[#00206B]">{user?.name || 'Pak Budi'}</h3>
+            <span className="bg-blue-50 text-blue-600 font-bold px-4 py-1.5 rounded-full text-xs mt-2 uppercase tracking-wide border border-blue-100">
+               {user?.role || 'Pengemudi'}
+            </span>
+
+            {/* Grid Informasi Data Diri Lengkap */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left flex gap-4 items-center">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#00206B] shadow-sm">
+                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                  </div>
+                  <div>
+                     <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">ID Pengemudi</span>
+                     <span className="font-extrabold text-[#00206B] text-sm">{user?.id || 'SUP001'}</span>
+                  </div>
+               </div>
+
+               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left flex gap-4 items-center">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#00206B] shadow-sm">
+                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                  </div>
+                  <div>
+                     <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Trayek Tugas</span>
+                     <span className="font-extrabold text-[#00206B] text-sm">{dummyTrayek}</span>
+                  </div>
+               </div>
+
+               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left flex gap-4 items-center md:col-span-2">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#00206B] shadow-sm">
+                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                  </div>
+                  <div>
+                     <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Armada Bus</span>
+                     <span className="font-extrabold text-[#00206B] text-sm">{dummyBus}</span>
+                  </div>
+               </div>
+            </div>
+
+            <div className="w-full mt-8 pt-6 border-t border-slate-100">
+              <button 
+                onClick={onLogout} 
+                className="w-full flex items-center justify-center gap-2 bg-[#FCE8E6] hover:bg-[#FAD2CF] text-[#C5221F] font-extrabold py-4 px-4 rounded-2xl transition-colors shadow-sm active:scale-[0.98] cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                KELUAR DARI APLIKASI
+              </button>
+            </div>
+         </div>
+      </div>
+    </div>
+  );
+};
+// 🔥 RIWAYAT DRIVER COMPONENT
 const RiwayatDriver = ({ driverReports = [], onViewDetail }) => {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -51,7 +195,7 @@ const RiwayatDriver = ({ driverReports = [], onViewDetail }) => {
   );
 };
 
-// 🔥 DETAIL LAPORAN COMPONENT (dengan Progress Bar)
+// 🔥 DETAIL LAPORAN COMPONENT
 const DetailLaporan = ({ report, onBack }) => {
   const calculateCompleteness = () => {
     let total = 0;
@@ -94,38 +238,28 @@ const DetailLaporan = ({ report, onBack }) => {
           </thead>
           <tbody>
             <tr><td className="border-2 border-slate-400 p-2 text-center">1</td><td className="border-2 border-slate-400 p-2">Nama Pengemudi</td><td className="border-2 border-slate-400 p-2" colSpan="2">{report.driverName || '-'}</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">2</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat berangkat dari kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerStart || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerStart || '-'}</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">3</td><td className="border-2 border-slate-400 p-2">Jam berangkat dari kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.start || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.start || '-'} WIB</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">2</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat berangkat dari kantor Dishub</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerStart || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerStart || '-'}</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">3</td><td className="border-2 border-slate-400 p-2">Jam berangkat dari kantor Dishub</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.start || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.start || '-'} WIB</td></tr>
             <tr><td className="border-2 border-slate-400 p-2 text-center" rowSpan="9">4</td><td className="border-2 border-slate-400 p-2 font-bold" colSpan="3">Kondisi kendaraan sebelum berangkat</td></tr>
-            {['Rem', 'AC', 'Lampu', 'Klakson', 'Wiper kaca', 'Lampu rem/seint', 'Bell Penumpang depan dan belakang', 'Pintu bus depan dan belakang', 'Kebersihan'].map((item, idx) => (
-              <tr key={idx}><td className="border-2 border-slate-400 p-2">{String.fromCharCode(97 + idx)}. {item}</td><td className="border-2 border-slate-400 p-2 text-center"><span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded font-bold text-xs">OK</span><span className="inline-block px-3 py-1 bg-red-100 text-red-800 rounded font-bold text-xs ml-2">KURANG</span></td><td className="border-2 border-slate-400 p-2 text-center" rowSpan="8"></td></tr>
+            {['Rem', 'AC', 'Lampu', 'Klakson', 'Wiper kaca', 'Lampu rem/seint', 'Bell Penumpang', 'Pintu bus', 'Kebersihan'].map((item, idx) => (
+              <tr key={idx}><td className="border-2 border-slate-400 p-2">{String.fromCharCode(97 + idx)}. {item}</td><td className="border-2 border-slate-400 p-2 text-center"><span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded font-bold text-xs">OK</span></td><td className="border-2 border-slate-400 p-2 text-center" rowSpan="8"></td></tr>
             ))}
             <tr><td className="border-2 border-slate-400 p-2 font-bold" colSpan="3">Kondisi kendaraan sesudah berangkat</td></tr>
             <tr><td className="border-2 border-slate-400 p-2 text-center">5</td><td className="border-2 border-slate-400 p-2">Jam berangkat dari titik awal trayek/start</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.departure || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.departure || '-'} WIB</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">6</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat berangkat dari titik awal trayek/start</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerDeparture || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerDeparture || '-'}</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">6</td><td className="border-2 border-slate-400 p-2">Km speedometer berangkat trayek/start</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerDeparture || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerDeparture || '-'}</td></tr>
             <tr><td className="border-2 border-slate-400 p-2 text-center">7</td><td className="border-2 border-slate-400 p-2">Jam datang di titik akhir trayek/finish</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.arrival || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.arrival || '-'} WIB</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">8</td><td className="border-2 border-slate-400 p-2">Km speedometer bus pada saat datang di titik akhir trayek/finish</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerArrival || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerArrival || '-'}</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">9</td><td className="border-2 border-slate-400 p-2">Jumlah penumpang/pelajar yang diangkut</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.passengers || '-'} Orang</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.passengers || '-'} Orang</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">10</td><td className="border-2 border-slate-400 p-2">Jam datang di kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.returnTime || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.returnTime || '-'} WIB</td></tr>
-            <tr><td className="border-2 border-slate-400 p-2 text-center">11</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat datang di kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerReturn || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerReturn || '-'}</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">8</td><td className="border-2 border-slate-400 p-2">Km speedometer datang trayek/finish</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerArrival || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerArrival || '-'}</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">9</td><td className="border-2 border-slate-400 p-2">Jumlah penumpang diangkut</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.passengers || '-'} Orang</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.passengers || '-'} Orang</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">10</td><td className="border-2 border-slate-400 p-2">Jam datang di kantor Dishub</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.returnTime || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.returnTime || '-'} WIB</td></tr>
+            <tr><td className="border-2 border-slate-400 p-2 text-center">11</td><td className="border-2 border-slate-400 p-2">Km speedometer datang di Dishub</td><td className="border-2 border-slate-400 p-2 text-center">{report.morning?.odometerReturn || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{report.afternoon?.odometerReturn || '-'}</td></tr>
           </tbody>
         </table>
-        <div className="mt-8 text-center">
-          <div className="inline-block text-center">
-            <p className="font-bold mb-16">PENGEMUDI</p>
-            <div className="border-t-2 border-slate-800 pt-2 w-48"><p className="font-bold text-sm">{report.driverName || '________________'}</p></div>
-          </div>
-        </div>
-        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
-          <p className="font-bold">Catatan:</p>
-          <p>Jika uraian kondisi kendaraan sebelum berangkat ada yang kurang, maka harus/wajib menghubungi/melaporkan kepada Seksi Angkutan, Bidang Angkutan Jalan.</p>
-        </div>
       </div>
     </div>
   );
 };
 
-// 🔥 REKAP COMPONENT (dengan Search)
+// 🔥 REKAP COMPONENT (Dengan Fitur Export Excel)
 const RekapPage = ({ trips = [], inspections = [] }) => {
   const [searchName, setSearchName] = useState('');
   const [selectedReport, setSelectedReport] = useState(null);
@@ -135,188 +269,160 @@ const RekapPage = ({ trips = [], inspections = [] }) => {
     return matchName;
   });
 
+  const handleExportExcel = () => {
+    if (filteredReports.length === 0) {
+      alert("Belum ada data laporan yang bisa diexport bro!");
+      return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Tanggal Laporan,Nama Pengemudi,Trayek,Armada Bus,Odometer Pagi,Penumpang Pagi,Odometer Siang,Penumpang Siang\n";
+
+    filteredReports.forEach(report => {
+      const tanggal = report.date || '-';
+      const nama = report.driverName || '-';
+      const trayek = report.trayek || '-';
+      const bus = report.bus || '-';
+      const odoPagi = report.morning?.odometerStart || '-';
+      const pnpPagi = report.morning?.passengers || '0';
+      const odoSiang = report.afternoon?.odometerStart || '-';
+      const pnpSiang = report.afternoon?.passengers || '0';
+
+      const row = `${tanggal},${nama},${trayek},${bus},${odoPagi},${pnpPagi},${odoSiang},${pnpSiang}`;
+      csvContent += row + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Rekap_SICLUS_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (selectedReport) {
-    return (
-      <div className="space-y-6 max-w-4xl mx-auto">
-        <button onClick={() => setSelectedReport(null)} className="flex items-center gap-2 text-sm font-bold text-[#00206B] hover:underline">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
-          Kembali ke Daftar
-        </button>
-        <div className="bg-white border-2 border-slate-300 rounded-xl p-8 shadow-lg">
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-black text-slate-800 uppercase">LAPORAN HARIAN ANGKUTAN SEKOLAH GRATIS KOTA MOJOKERTO</h2>
-            <p className="text-sm font-bold text-slate-600">TAHUN 2026</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-            <div><span className="font-bold">HARI / TANGGAL</span><p className="text-slate-700 mt-1">{selectedReport.date || '-'}</p></div>
-            <div><span className="font-bold">TRAYEK / NOPOL</span><p className="text-slate-700 mt-1">{selectedReport.trayek || '-'} / {selectedReport.bus || '-'}</p></div>
-          </div>
-          <table className="w-full border-collapse border-2 border-slate-400 text-sm">
-            <thead>
-              <tr className="bg-slate-100"><th className="border-2 border-slate-400 p-2" rowSpan="2">No.</th><th className="border-2 border-slate-400 p-2" rowSpan="2">URAIAN</th><th className="border-2 border-slate-400 p-2" colSpan="2">PELAYANAN</th></tr>
-              <tr className="bg-slate-100"><th className="border-2 border-slate-400 p-2">PAGI / BERANGKAT SEKOLAH</th><th className="border-2 border-slate-400 p-2">SIANG / PULANG SEKOLAH</th></tr>
-            </thead>
-            <tbody>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">1</td><td className="border-2 border-slate-400 p-2">Nama Pengemudi</td><td className="border-2 border-slate-400 p-2" colSpan="2">{selectedReport.driverName || '-'}</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">2</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat berangkat dari kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.odometerStart || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.odometerStart || '-'}</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">3</td><td className="border-2 border-slate-400 p-2">Jam berangkat dari kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.start || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.start || '-'} WIB</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center" rowSpan="9">4</td><td className="border-2 border-slate-400 p-2 font-bold" colSpan="3">Kondisi kendaraan sebelum berangkat</td></tr>
-              {['Rem', 'AC', 'Lampu', 'Klakson', 'Wiper kaca', 'Lampu rem/seint', 'Bell Penumpang depan dan belakang', 'Pintu bus depan dan belakang', 'Kebersihan'].map((item, idx) => (
-                <tr key={idx}><td className="border-2 border-slate-400 p-2">{String.fromCharCode(97 + idx)}. {item}</td><td className="border-2 border-slate-400 p-2 text-center"><span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded font-bold text-xs">OK</span><span className="inline-block px-3 py-1 bg-red-100 text-red-800 rounded font-bold text-xs ml-2">KURANG</span></td><td className="border-2 border-slate-400 p-2 text-center" rowSpan="8"></td></tr>
-              ))}
-              <tr><td className="border-2 border-slate-400 p-2 font-bold" colSpan="3">Kondisi kendaraan sesudah berangkat</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">5</td><td className="border-2 border-slate-400 p-2">Jam berangkat dari titik awal trayek/start</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.departure || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.departure || '-'} WIB</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">6</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat berangkat dari titik awal trayek/start</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.odometerDeparture || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.odometerDeparture || '-'}</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">7</td><td className="border-2 border-slate-400 p-2">Jam datang di titik akhir trayek/finish</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.arrival || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.arrival || '-'} WIB</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">8</td><td className="border-2 border-slate-400 p-2">Km speedometer bus pada saat datang di titik akhir trayek/finish</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.odometerArrival || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.odometerArrival || '-'}</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">9</td><td className="border-2 border-slate-400 p-2">Jumlah penumpang/pelajar yang diangkut</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.passengers || '-'} Orang</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.passengers || '-'} Orang</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">10</td><td className="border-2 border-slate-400 p-2">Jam datang di kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.returnTime || '-'} WIB</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.returnTime || '-'} WIB</td></tr>
-              <tr><td className="border-2 border-slate-400 p-2 text-center">11</td><td className="border-2 border-slate-400 p-2">Km speedometer pada saat datang di kantor Dinas Perhubungan Kota Mojokerto</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.morning?.odometerReturn || '-'}</td><td className="border-2 border-slate-400 p-2 text-center">{selectedReport.afternoon?.odometerReturn || '-'}</td></tr>
-            </tbody>
-          </table>
-          <div className="mt-8 text-center">
-            <div className="inline-block text-center">
-              <p className="font-bold mb-16">PENGEMUDI</p>
-              <div className="border-t-2 border-slate-800 pt-2 w-48"><p className="font-bold text-sm">{selectedReport.driverName || '________________'}</p></div>
-            </div>
-          </div>
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
-            <p className="font-bold">Catatan:</p>
-            <p>Jika uraian kondisi kendaraan sebelum berangkat ada yang kurang, maka harus/wajib menghubungi/melaporkan kepada Seksi Angkutan, Bidang Angkutan Jalan.</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailLaporan report={selectedReport} onBack={() => setSelectedReport(null)} />;
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="space-y-1">
-        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Data Rekapitulasi</h2>
-        <p className="text-sm text-slate-400 font-semibold mt-0.5">Pantau semua laporan pengemudi</p>
+    <div className="space-y-6 max-w-5xl mx-auto pb-6">
+      
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Data Rekapitulasi</h2>
+          <p className="text-sm text-slate-400 font-semibold mt-0.5">Pantau dan unduh semua laporan pengemudi</p>
+        </div>
+        
+        <button 
+          onClick={handleExportExcel}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 px-5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          UNDUH DATA EXCEL
+        </button>
       </div>
+
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
         <h3 className="text-sm font-extrabold text-[#00206B] uppercase">Cari Laporan</h3>
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Nama Pengemudi</label>
-          <input type="text" value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder="Cari nama supir..." className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" />
-        </div>
-        <button onClick={() => setSearchName('')} className="text-xs font-bold text-slate-500 hover:text-[#00206B] underline">Reset Pencarian</button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div><span className="text-xs font-bold text-slate-400 block">Total Laporan</span><span className="text-2xl font-black text-[#00206B] block mt-1">{filteredReports.length}</span></div>
-            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#00206B]"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></div>
-          </div>
+          <input 
+            type="text" 
+            value={searchName} 
+            onChange={(e) => setSearchName(e.target.value)} 
+            placeholder="Cari nama supir..." 
+            className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" 
+          />
         </div>
       </div>
+
       {filteredReports.length > 0 ? (
         <div className="space-y-3">
           {filteredReports.map((report, index) => (
-            <div key={index} onClick={() => setSelectedReport(report)} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg">{report.driverName?.charAt(0) || '?'}</div>
-                  <div><h3 className="text-base font-extrabold text-[#00206B]">{report.driverName || 'Unknown'}</h3><p className="text-xs text-slate-400 font-semibold mt-0.5">{report.date || 'Tanggal tidak tercatat'} • {report.trayek || '-'} • {report.bus || '-'}</p></div>
-                </div>
-                <div className="flex items-center gap-2 text-slate-400"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></div>
+            <div key={index} onClick={() => setSelectedReport(report)} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer flex justify-between items-center">
+              <div>
+                <h3 className="text-base font-extrabold text-[#00206B]">{report.driverName || 'Unknown'}</h3>
+                <p className="text-xs text-slate-400 font-semibold">{report.date || '-'}</p>
+              </div>
+              <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
+                Detail ➔
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-4"><svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></div>
-          <h3 className="text-lg font-extrabold text-slate-600 m-0">Tidak Ada Laporan</h3>
-          <p className="text-sm text-slate-500 font-medium mt-1">Belum ada laporan yang tercatat</p>
-        </div>
+        <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-12 text-center text-slate-500 font-medium">Tidak Ada Laporan</div>
       )}
     </div>
   );
 };
 
-// 🔥 KELOLA USER COMPONENT
-const ManageUsers = ({ onBack }) => {
+// 🔥 KELOLA USER & ADMIN PANEL COMPONENT
+const ManageUsers = ({ onBack, shiftRules, setShiftRules, onForceUnlock }) => {
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'pengemudi', phone: '', trayek: '', bus: '' });
-  const [successMsg, setSuccessMsg] = useState('');
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'pengemudi', trayek: '', bus: '' });
   const localUsers = JSON.parse(localStorage.getItem('siclus_users') || '[]');
-
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem('siclus_users') || '[]');
-    if (users.find(u => u.email === formData.email)) { alert('Email sudah terdaftar!'); return; }
     const newUser = { id: `SUP${String(users.length + 1).padStart(3, '0')}`, ...formData };
     users.push(newUser);
     localStorage.setItem('siclus_users', JSON.stringify(users));
-    setSuccessMsg(`User ${formData.name} berhasil ditambahkan!`);
     setShowForm(false);
-    setFormData({ name: '', email: '', password: '', role: 'pengemudi', phone: '', trayek: '', bus: '' });
-    setTimeout(() => setSuccessMsg(''), 3000);
   };
 
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto pb-6">
       <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Kelola Pengguna</h2>
-          <p className="text-sm text-slate-400 font-semibold mt-0.5">Tambah, edit, atau hapus akun pengemudi</p>
+        <h2 className="text-2xl font-black text-[#00206B]">Kelola Pengguna</h2>
+        <button onClick={onBack} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer font-bold text-sm">Kembali</button>
+      </div>
+
+      <div className="bg-white border-2 border-red-100 rounded-2xl p-6 shadow-sm mb-6">
+        <h3 className="text-sm font-extrabold text-red-600 uppercase mb-4">Pengaturan Waktu & Kunci Laporan</h3>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 mb-1">Jam Buka Pagi</label>
+            <input type="number" value={shiftRules.pagi} onChange={e => setShiftRules({...shiftRules, pagi: parseInt(e.target.value)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 mb-1">Jam Buka Siang</label>
+            <input type="number" value={shiftRules.siang} onChange={e => setShiftRules({...shiftRules, siang: parseInt(e.target.value)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-sm" />
+          </div>
         </div>
-        <button onClick={onBack} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+        <button onClick={onForceUnlock} className="w-full bg-red-500 text-white font-black py-4 rounded-xl shadow-md cursor-pointer">
+          BUKA PAKSA KUNCI LAPORAN SEMUA SUPIR
         </button>
       </div>
-      {successMsg && (
-        <div className="bg-[#E6F7ED] border border-[#BCECD2] text-[#137333] font-bold py-3 px-4 rounded-xl flex items-center gap-2">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-          {successMsg}
-        </div>
-      )}
-      <button onClick={() => setShowForm(true)} className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-extrabold py-4 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-        TAMBAH PENGGUNA BARU
-      </button>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <button onClick={() => setShowForm(true)} className="w-full bg-[#00206B] text-white font-extrabold py-4 rounded-xl shadow-sm cursor-pointer">TAMBAH PENGGUNA BARU</button>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {localUsers.filter(u => u.role !== 'admin').map((user) => (
           <div key={user.id} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg">{user.name.charAt(0)}</div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-extrabold text-[#00206B] truncate">{user.name}</h3>
-                <p className="text-xs text-slate-400 font-semibold">{user.id}</p>
-                <p className="text-xs text-slate-500 mt-1 truncate">{user.email}</p>
-              </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs">
-              <div className="flex justify-between"><span className="text-slate-400 font-semibold">Trayek</span><span className="font-bold text-[#00206B]">{user.trayek || '-'}</span></div>
-              <div className="flex justify-between"><span className="text-slate-400 font-semibold">Bus</span><span className="font-bold text-[#00206B]">{user.bus || '-'}</span></div>
-            </div>
+            <h3 className="text-base font-extrabold text-[#00206B]">{user.name}</h3>
+            <p className="text-xs text-slate-500 font-medium">{user.email}</p>
           </div>
         ))}
       </div>
+
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-black text-[#00206B]">Tambah Pengguna Baru</h3>
-              <button onClick={() => setShowForm(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-lg font-black text-[#00206B] mb-4">Tambah Pengguna Baru</h3>
             <form onSubmit={handleSubmit} className="space-y-3">
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Nama Lengkap</label><input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="Nama pengemudi" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email</label><input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="pengemudi@siclus.id" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label><input type="password" name="password" required value={formData.password} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="Minimal 6 karakter" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">No. Telepon</label><input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="081234567890" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Trayek</label><input type="text" name="trayek" value={formData.trayek} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="Trayek A" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Bus</label><input type="text" name="bus" value={formData.bus} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] focus:bg-white rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" placeholder="Bus 07 (S 1772 SP)" /></div>
-              <button type="submit" className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm cursor-pointer mt-2">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                TAMBAH PENGGUNA
-              </button>
+              <input type="text" name="name" required onChange={handleChange} placeholder="Nama Lengkap" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00206B] outline-none" />
+              <input type="email" name="email" required onChange={handleChange} placeholder="Email" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00206B] outline-none" />
+              <input type="password" name="password" required onChange={handleChange} placeholder="Password" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00206B] outline-none" />
+              <input type="text" name="trayek" onChange={handleChange} placeholder="Trayek (Misal: Trayek A)" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00206B] outline-none" />
+              <input type="text" name="bus" onChange={handleChange} placeholder="Bus (Misal: Bus 07)" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00206B] outline-none" />
+              <button type="submit" className="w-full bg-[#00206B] text-white py-3.5 rounded-xl mt-4 font-bold shadow-md cursor-pointer">Simpan Pengguna</button>
+              <button type="button" onClick={() => setShowForm(false)} className="w-full bg-slate-200 text-slate-700 py-3.5 rounded-xl mt-2 font-bold cursor-pointer hover:bg-slate-300">Batal</button>
             </form>
           </div>
         </div>
@@ -336,6 +442,11 @@ function App() {
   const [trips, setTrips] = useState([]);
   const [driverReports, setDriverReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const [currentShift, setCurrentShift] = useState('pagi');
+  const [tempMorningData, setTempMorningData] = useState(null);
+  const [isLaporanLocked, setIsLaporanLocked] = useState(false);
+  const [shiftRules, setShiftRules] = useState({ pagi: 5, siang: 12 });
 
   const handleLogin = (userInfo) => {
     setUser(userInfo);
@@ -362,27 +473,34 @@ function App() {
   };
 
   const handleTripSubmit = (report) => {
-    const reportWithTimestamp = {
-      ...report,
-      driverName: user?.name || 'Pak Budi',
-      date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
-      submittedAt: new Date().toLocaleString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      trayek: 'Trayek A',
-      bus: 'Bus 07 (S 1772 SP)',
-      morning: {
-        odometerStart: '67008', start: '05:30', departure: '06:10', odometerDeparture: '67013',
-        arrival: '06:40', odometerArrival: '67018', passengers: 6, returnTime: '07:00', odometerReturn: '67023'
-      },
-      afternoon: {
-        odometerStart: '67023', start: '14:00', departure: '14:55', odometerDeparture: '67027',
-        arrival: '15:30', odometerArrival: '67032', passengers: 5, returnTime: '15:45', odometerReturn: '67037'
-      }
-    };
-    setTrips((prev) => [reportWithTimestamp, ...prev]);
-    setDriverReports((prev) => [reportWithTimestamp, ...prev]);
-    setTripStatus("belum_mulai");
-    setCurrentPage("ringkasan");
-    setTripData(null);
+    if (currentShift === 'pagi') {
+      setTempMorningData(report.morning || report);
+      setCurrentShift('siang');
+      setIsLaporanLocked(true);
+      setCurrentPage('beranda');
+      setTripData(null);
+    } else {
+      const reportWithTimestamp = {
+        ...report,
+        driverName: user?.name || 'Pak Budi',
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+        submittedAt: new Date().toLocaleString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        trayek: 'Trayek A',
+        bus: 'Bus 07 (S 1772 SP)',
+        morning: tempMorningData,
+        afternoon: report.afternoon || report
+      };
+
+      setTrips((prev) => [reportWithTimestamp, ...prev]);
+      setDriverReports((prev) => [reportWithTimestamp, ...prev]);
+      
+      setTripStatus("belum_mulai");
+      setCurrentShift('pagi');
+      setTempMorningData(null);
+      setIsLaporanLocked(false);
+      setCurrentPage("ringkasan");
+      setTripData(null);
+    }
   };
 
   const handleResetLogs = () => { setInspections([]); setTrips([]); setDriverReports([]); setTripStatus("belum_mulai"); };
@@ -402,56 +520,31 @@ function App() {
     }
   };
 
-  const renderPage = () => {
-    if (!user) return <Login onLoginSuccess={handleLogin} />;
-    switch (currentPage) {
-      case "beranda":
-        if (user?.role?.toLowerCase() === 'admin') { setCurrentPage('riwayatdriver'); return null; }
-        return <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} stats={{ totalInspection: inspections.length, activeTrips: trips.length }} />;
-      case "persiapan":
-        return <Persiapan onNext={(data) => { setPreparationData(data); setCurrentPage("inspeksi"); }} />;
-      case "inspeksi":
-        if (!preparationData) { setCurrentPage("persiapan"); return null; }
-        return <Inspeksi preparationData={preparationData} onNext={handleInspectionSuccess} onReportIssue={(report) => { setPreparationData(report); setCurrentPage("kendala"); }} />;
-      case "kendala":
-        if (!preparationData) { setCurrentPage("persiapan"); return null; }
-        return <Kendala data={preparationData} onSubmit={handleInspectionIssues} />;
-      case "titikstart":
-        return <TitikStart onNext={(data) => { setTripData(data); setCurrentPage("penumpang"); }} />;
-      case "penumpang":
-        if (!tripData) { setCurrentPage("titikstart"); return null; }
-        return <Penumpang tripData={tripData} onSubmit={handleTripSubmit} />;
-      case "ringkasan":
-        return <RingkasanHarian inspections={inspections} trips={trips} onResetAllLogs={handleResetLogs} />;
-      case "riwayatdriver":
-        return <RiwayatDriver driverReports={driverReports} onViewDetail={(report) => { setSelectedReport(report); setCurrentPage('detaillaporan'); }} />;
-      case "detaillaporan":
-        return <DetailLaporan report={selectedReport} onBack={() => setCurrentPage('riwayatdriver')} />;
-      case "rekap":
-        return <RekapPage trips={trips} inspections={inspections} />;
-      case "kelolauser":
-        return <ManageUsers onBack={() => setCurrentPage('riwayatdriver')} />;
-      case "akun":
-        return (
-          <div className="flex flex-col items-center justify-center p-6 mt-6 space-y-6 animate-[fadeIn_0.5s_ease-out]">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white shadow-xl border-4 border-white">
-              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            </div>
-            <div className="text-center">
-              <h2 className="text-3xl font-black text-[#00206B] uppercase tracking-tight">{user?.name || 'Pengemudi'}</h2>
-              <p className="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">{user?.id || 'ID Tidak Diketahui'} • {user?.role || 'Pengemudi'}</p>
-            </div>
-            <div className="w-full max-w-sm mt-8 p-6 bg-white rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col gap-4">
-              <button onClick={handleLogout} className="w-full relative overflow-hidden bg-red-50 text-red-600 font-bold py-4 px-4 rounded-2xl border border-red-100 hover:bg-red-500 hover:text-white hover:border-red-500 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group">
-                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                <span>KELUAR APLIKASI</span>
-              </button>
-            </div>
-          </div>
-        );
-      default:
-        return user?.role?.toLowerCase() === 'admin' ? <div className="flex flex-col items-center justify-center p-10 mt-10"><h2 className="text-3xl font-black text-[#00206B]">Riwayat Driver</h2></div> : <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} />;
-    }
+  const renderLockedScreen = () => {
+    const nextShiftName = currentShift === 'siang' ? 'Siang' : 'Pagi (Besok)';
+    const nextShiftTime = currentShift === 'siang' ? shiftRules.siang : shiftRules.pagi;
+
+    return (
+      <div className="flex flex-col items-center justify-center p-8 mt-16 text-center space-y-5 animate-[fadeIn_0.3s]">
+        <div className="w-24 h-24 bg-[#FCE8E6] text-[#C5221F] rounded-full flex items-center justify-center border-4 border-[#FAD2CF] shadow-sm">
+          <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-black text-[#00206B] uppercase m-0">Laporan Dikunci</h2>
+        <div className="bg-white border-2 border-slate-200 w-full max-w-sm p-4 rounded-2xl shadow-sm">
+          <p className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Jadwal Pengisian Selanjutnya:</p>
+          <p className="text-xl font-black text-[#C5221F]">Shift {nextShiftName} - {nextShiftTime}:00 WIB</p>
+        </div>
+        <p className="text-xs font-bold text-slate-500 max-w-xs leading-relaxed">Anda sudah menyelesaikan form shift sebelumnya. Cek Beranda untuk melihat progress atau hubungi Admin jika butuh akses mendesak.</p>
+        <button onClick={() => setCurrentPage('beranda')} className="mt-2 w-full max-w-xs bg-[#00206B] hover:bg-[#00174E] text-white py-4 rounded-xl font-extrabold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Kembali ke Beranda
+        </button>
+      </div>
+    );
   };
 
   const getPageTitle = () => {
@@ -481,12 +574,73 @@ function App() {
     }
   };
 
+  const renderPage = () => {
+    if (!user) return <Login onLoginSuccess={handleLogin} />;
+    switch (currentPage) {
+      case "beranda":
+        if (user?.role?.toLowerCase() === 'admin') { setCurrentPage('riwayatdriver'); return null; }
+        return <Beranda 
+          activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} stats={{ totalInspection: inspections.length, activeTrips: trips.length }}
+          currentShift={currentShift} isLaporanLocked={isLaporanLocked} shiftRules={shiftRules} 
+          onStartSiang={() => { setIsLaporanLocked(false); setCurrentPage("titikstart"); }}
+        />;
+      case "persiapan":
+        if (isLaporanLocked) return renderLockedScreen();
+        return <Persiapan onNext={(data) => { setPreparationData(data); setCurrentPage("inspeksi"); }} />;
+      case "inspeksi":
+        if (isLaporanLocked) return renderLockedScreen();
+        if (!preparationData) { setCurrentPage("persiapan"); return null; }
+        return <Inspeksi preparationData={preparationData} onNext={handleInspectionSuccess} onReportIssue={(report) => { setPreparationData(report); setCurrentPage("kendala"); }} />;
+      case "kendala":
+        if (isLaporanLocked) return renderLockedScreen();
+        if (!preparationData) { setCurrentPage("persiapan"); return null; }
+        return <Kendala data={preparationData} onSubmit={handleInspectionIssues} />;
+      case "titikstart":
+        if (isLaporanLocked) return renderLockedScreen();
+        return <TitikStart onNext={(data) => { setTripData(data); setCurrentPage("penumpang"); }} />;
+      case "penumpang":
+        if (isLaporanLocked) return renderLockedScreen();
+        if (!tripData) { setCurrentPage("titikstart"); return null; }
+        return <Penumpang tripData={tripData} onSubmit={handleTripSubmit} />;
+      case "ringkasan":
+        return <RingkasanHarian inspections={inspections} trips={trips} currentShift={currentShift} onResetAllLogs={handleResetLogs} />;
+      case "riwayatdriver":
+        return <RiwayatDriver driverReports={driverReports} onViewDetail={(report) => { setSelectedReport(report); setCurrentPage('detaillaporan'); }} />;
+      case "detaillaporan":
+        return <DetailLaporan report={selectedReport} onBack={() => setCurrentPage('riwayatdriver')} />;
+      case "rekap":
+        return <RekapPage trips={trips} inspections={inspections} />;
+      case "kelolauser":
+        return <ManageUsers 
+          onBack={() => setCurrentPage('riwayatdriver')} 
+          shiftRules={shiftRules} setShiftRules={setShiftRules} 
+          onForceUnlock={() => { setIsLaporanLocked(false); alert("BERHASIL! Gembok supir telah dibuka paksa."); }}
+        />;
+      case "akun":
+        return <ProfilAkun user={user} onLogout={handleLogout} />;
+      default:
+        return user?.role?.toLowerCase() === 'admin' ? <div className="p-10 text-center"><h2 className="text-3xl font-black">Riwayat Driver</h2></div> : <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} />;
+    }
+  };
+
+  const getActiveMenuTab = () => {
+    if (["persiapan", "inspeksi", "kendala", "titikstart", "penumpang"].includes(currentPage)) { return "laporan"; }
+    if (["ringkasan"].includes(currentPage)) { return "riwayat"; }
+    if (["detaillaporan"].includes(currentPage)) { return "riwayatdriver"; }
+    return currentPage;
+  };
+
   return (
     <div className="min-h-screen w-full bg-[#131314] font-sans antialiased overflow-hidden">
       {!user ? (
         renderPage()
       ) : (
-        <MobileLayout user={user} title={getPageTitle()} onBack={currentPage !== "beranda" && currentPage !== "ringkasan" && currentPage !== "rekap" && currentPage !== "kelolauser" && currentPage !== "riwayatdriver" ? handleBack : null} activeMenu={currentPage} onMenuClick={handleMenuNavigation}>
+        <MobileLayout 
+          user={user} title={getPageTitle()} 
+          onBack={currentPage !== "beranda" && currentPage !== "ringkasan" && currentPage !== "rekap" && currentPage !== "kelolauser" && currentPage !== "riwayatdriver" ? handleBack : null} 
+          activeMenu={getActiveMenuTab()} 
+          onMenuClick={handleMenuNavigation}
+        >
           {renderPage()}
           <BottomNav user={user} activeTab={currentPage} setActiveTab={setCurrentPage} />
         </MobileLayout>
@@ -495,4 +649,4 @@ function App() {
   );
 }
 
-export default App;   
+export default App;

@@ -1,13 +1,13 @@
 import React from 'react';
 
-const RingkasanHarian = ({ inspections = [], trips = [], onResetAllLogs }) => {
+// 🔥 BELAJAR DISINI: Kita udah nggak butuh onStartSiang di sini, jadi dicabut dari props.
+const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAllLogs }) => {
   // Ambil data trip terakhir
   const latestTrip = trips[0];
   const latestInspection = inspections[0];
   
   // Extract data dari inspection
   const odometerStart = latestInspection?.odometer || '67008';
-  const photoTaken = latestInspection?.photoTaken || false;
   
   // Extract data dari trip
   const passengerCount = latestTrip?.passengers?.total || latestTrip?.passengers?.seated || 0;
@@ -91,23 +91,9 @@ const RingkasanHarian = ({ inspections = [], trips = [], onResetAllLogs }) => {
               <span className="text-base font-black text-[#00206B]">{passengerCount} Siswa</span>
             </div>
           </div>
-
-          {/* Card 2: Perjalanan Siang */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 className="text-base font-extrabold text-[#00206B] m-0 pb-2 border-b border-slate-100">
-              Perjalanan Siang
-            </h3>
-            {/* Status Warning Alert */}
-            <div className="bg-[#FCE8E6] border border-[#FAD2CF] text-[#C5221F] rounded-xl p-4 flex items-center gap-2 text-sm font-bold">
-              <span>️</span>
-              <span>Status: Belum Dimulai</span>
-            </div>
-            {/* Total Passengers Row */}
-            <div className="flex items-center justify-between text-sm pt-2">
-              <span className="font-bold text-slate-400">Total Penumpang</span>
-              <span className="text-base font-black text-slate-400">-</span>
-            </div>
-          </div>
+          
+          {/* 🔥 BELAJAR DISINI: Card Perjalanan Siang beserta tombolnya 
+              UDAH GUE BUMI HANGUSKAN DARI SINI BIAR HALAMANNYA BERSIH! 🧹 */}
         </div>
 
         {/* Sidebar - 1/3 width */}
