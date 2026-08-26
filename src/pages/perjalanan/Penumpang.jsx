@@ -32,16 +32,20 @@ const Penumpang = ({ tripData, onSubmit }) => {
 
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto pb-6">
+      
+      {/* Title Section */}
       <div className="space-y-1">
         <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0">Pencatatan Penumpang</h2>
         <p className="text-sm text-slate-400 font-semibold mt-0.5">
-          {tripData.route || 'Rute Pagi - SMPN 1 Mojokerto'}
+          {tripData?.route || 'Rute Pagi - SMPN 1 Mojokerto'}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Kolom Kiri: Input Penumpang (2/3 layar Desktop) */}
         <div className="lg:col-span-2">
-          <div className="bg-white border border-slate-100 rounded-2xl p-8 shadow-sm space-y-6 flex flex-col items-center">
+          <div className="bg-white border border-slate-100 rounded-2xl p-8 shadow-sm space-y-6 flex flex-col items-center h-full">
             <span className="text-lg font-extrabold text-[#00206B] tracking-tight block">
               Jumlah Pelajar / Penumpang
             </span>
@@ -53,6 +57,7 @@ const Penumpang = ({ tripData, onSubmit }) => {
               >
                 －
               </button>
+              
               <div className="flex items-baseline justify-center relative flex-1 min-w-[100px]">
                 <input
                   type="text"
@@ -62,6 +67,7 @@ const Penumpang = ({ tripData, onSubmit }) => {
                   className="w-full text-center text-6xl font-black text-[#00206B] focus:outline-none bg-transparent"
                 />
               </div>
+              
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -73,6 +79,7 @@ const Penumpang = ({ tripData, onSubmit }) => {
                 <span className="text-sm font-black text-slate-500">Orang</span>
               </div>
             </div>
+            
             <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold pt-2 border-t border-slate-50 w-full justify-center">
               <span>ⓘ</span>
               <span>Klik +/- atau ketik langsung angkanya</span>
@@ -80,27 +87,37 @@ const Penumpang = ({ tripData, onSubmit }) => {
           </div>
         </div>
 
+        {/* 🔥 BELAJAR DISINI: Kolom Kanan: Info Perjalanan 
+            Gue ubah padding jadi p-8 (setara kotak kiri),
+            Font title dibesarin (text-lg), Font list dibesarin (text-sm/base),
+            Margin/Space ditambahin biar renggang dan proporsional! */}
         <div className="space-y-4">
-          <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
-            <h4 className="text-sm font-extrabold text-[#00206B] mb-3">Info Perjalanan</h4>
-            <div className="space-y-2 text-xs text-slate-600">
-              <div className="flex justify-between">
-                <span className="font-semibold">Rute</span>
-                <span className="text-slate-400">Pagi</span>
+          <div className="bg-white border border-slate-100 rounded-2xl p-8 shadow-sm h-full">
+            <h4 className="text-lg font-extrabold text-[#00206B] mb-5 border-b border-slate-100 pb-3">Info Perjalanan</h4>
+            <div className="space-y-4 text-sm text-slate-600">
+              
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-slate-500">Rute</span>
+                <span className="text-base font-black text-[#00206B]">Pagi</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">Trayek</span>
-                <span className="text-slate-400">A</span>
+              
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-slate-500">Trayek</span>
+                <span className="text-base font-black text-[#00206B]">A</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">Bus</span>
-                <span className="text-slate-400">07</span>
+              
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-slate-500">Bus</span>
+                <span className="text-base font-black text-[#00206B]">07</span>
               </div>
+              
             </div>
           </div>
         </div>
+
       </div>
 
+      {/* Submit Button */}
       <button
         onClick={handleSubmit}
         className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-extrabold py-4 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
