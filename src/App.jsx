@@ -10,41 +10,31 @@ import TitikStart from "./pages/perjalanan/TitikStart";
 import Penumpang from "./pages/perjalanan/Penumpang";
 import RingkasanHarian from "./pages/RingkasanHarian";
 
-// 🔥 PROFIL AKUN COMPONENT (FITUR GANTI FOTO ALA STEAM UDAH NYALA!)
+// 🔥 PROFIL AKUN COMPONENT
 const ProfilAkun = ({ user, onLogout }) => {
-  // 1. State buat nyimpen foto sementara & Pop-up
   const [profilePic, setProfilePic] = React.useState(null); 
   const [toastMsg, setToastMsg] = React.useState('');
-  
-  // 2. Ref buat nyambungin tombol kamera ke hidden input
   const fileInputRef = React.useRef(null);
 
   const dummyTrayek = user?.trayek || 'Trayek A';
   const dummyBus = user?.bus || 'Bus 07 (S 1772 SP)';
 
-  // 3. Fungsi pas foto dipilih dari galeri
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Bikin URL sementara buat nampilin foto di frontend (langsung ganti!)
       const imageUrl = URL.createObjectURL(file);
       setProfilePic(imageUrl);
-      
-      // Kasih notif sukses!
       setToastMsg('Foto profil berhasil diubah! 📸 (Preview Lokal)');
       setTimeout(() => setToastMsg(''), 3000);
     }
   };
 
-  // 4. Fungsi pas tombol kamera diklik (manggil input rahasia)
   const handleCameraClick = () => {
     fileInputRef.current.click();
   };
 
   return (
     <div className="space-y-6 text-left max-w-3xl mx-auto pb-6 relative">
-      
-      {/* TOAST NOTIFICATION */}
       {toastMsg && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 z-[100] animate-[fadeIn_0.3s_ease-out]">
           <div className="bg-[#00206B] text-white px-6 py-3.5 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,32,107,0.5)] flex items-center gap-3 border border-blue-400/30">
@@ -68,7 +58,6 @@ const ProfilAkun = ({ user, onLogout }) => {
             <div className="relative">
               <div className="w-28 h-28 rounded-full bg-white p-1.5 shadow-lg">
                 <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
-                   {/* 🔥 5. LOGIC NAMPILIN FOTO: Kalo ada foto tampilin, kalo gaada tampilin icon default */}
                    {profilePic ? (
                      <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                    ) : (
@@ -79,20 +68,9 @@ const ProfilAkun = ({ user, onLogout }) => {
                 </div>
               </div>
               
-              {/* 🔥 6. INPUT RAHASIA! (Disembunyiin pake class 'hidden') */}
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={fileInputRef} 
-                onChange={handlePhotoChange} 
-              />
+              <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handlePhotoChange} />
 
-              {/* Tombol Kamera yang kelihatan */}
-              <button 
-                onClick={handleCameraClick}
-                className="absolute bottom-1 right-1 bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-transform text-[#00206B] border border-slate-100 cursor-pointer active:scale-95"
-              >
+              <button onClick={handleCameraClick} className="absolute bottom-1 right-1 bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-transform text-[#00206B] border border-slate-100 cursor-pointer active:scale-95">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -101,11 +79,8 @@ const ProfilAkun = ({ user, onLogout }) => {
             </div>
 
             <h3 className="mt-4 text-2xl font-black text-[#00206B]">{user?.name || 'Pak Budi'}</h3>
-            <span className="bg-blue-50 text-blue-600 font-bold px-4 py-1.5 rounded-full text-xs mt-2 uppercase tracking-wide border border-blue-100">
-               {user?.role || 'Pengemudi'}
-            </span>
+            <span className="bg-blue-50 text-blue-600 font-bold px-4 py-1.5 rounded-full text-xs mt-2 uppercase tracking-wide border border-blue-100">{user?.role || 'Pengemudi'}</span>
 
-            {/* Grid Informasi Data Diri Lengkap */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left flex gap-4 items-center">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#00206B] shadow-sm">
@@ -139,10 +114,7 @@ const ProfilAkun = ({ user, onLogout }) => {
             </div>
 
             <div className="w-full mt-8 pt-6 border-t border-slate-100">
-              <button 
-                onClick={onLogout} 
-                className="w-full flex items-center justify-center gap-2 bg-[#FCE8E6] hover:bg-[#FAD2CF] text-[#C5221F] font-extrabold py-4 px-4 rounded-2xl transition-colors shadow-sm active:scale-[0.98] cursor-pointer"
-              >
+              <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 bg-[#FCE8E6] hover:bg-[#FAD2CF] text-[#C5221F] font-extrabold py-4 px-4 rounded-2xl transition-colors shadow-sm active:scale-[0.98] cursor-pointer">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
@@ -154,6 +126,7 @@ const ProfilAkun = ({ user, onLogout }) => {
     </div>
   );
 };
+
 // 🔥 RIWAYAT DRIVER COMPONENT
 const RiwayatDriver = ({ driverReports = [], onViewDetail }) => {
   return (
@@ -259,7 +232,7 @@ const DetailLaporan = ({ report, onBack }) => {
   );
 };
 
-// 🔥 REKAP COMPONENT (Dengan Fitur Export Excel)
+// 🔥 REKAP COMPONENT
 const RekapPage = ({ trips = [], inspections = [] }) => {
   const [searchName, setSearchName] = useState('');
   const [selectedReport, setSelectedReport] = useState(null);
@@ -314,10 +287,7 @@ const RekapPage = ({ trips = [], inspections = [] }) => {
           <p className="text-sm text-slate-400 font-semibold mt-0.5">Pantau dan unduh semua laporan pengemudi</p>
         </div>
         
-        <button 
-          onClick={handleExportExcel}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 px-5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-        >
+        <button onClick={handleExportExcel} className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 px-5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
@@ -329,13 +299,7 @@ const RekapPage = ({ trips = [], inspections = [] }) => {
         <h3 className="text-sm font-extrabold text-[#00206B] uppercase">Cari Laporan</h3>
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Nama Pengemudi</label>
-          <input 
-            type="text" 
-            value={searchName} 
-            onChange={(e) => setSearchName(e.target.value)} 
-            placeholder="Cari nama supir..." 
-            className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" 
-          />
+          <input type="text" value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder="Cari nama supir..." className="w-full bg-slate-50 border border-slate-200 focus:border-[#00206B] rounded-xl px-4 py-3 text-sm font-bold focus:outline-none transition-all" />
         </div>
       </div>
 
@@ -347,9 +311,7 @@ const RekapPage = ({ trips = [], inspections = [] }) => {
                 <h3 className="text-base font-extrabold text-[#00206B]">{report.driverName || 'Unknown'}</h3>
                 <p className="text-xs text-slate-400 font-semibold">{report.date || '-'}</p>
               </div>
-              <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
-                Detail ➔
-              </div>
+              <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">Detail ➔</div>
             </div>
           ))}
         </div>
@@ -360,7 +322,7 @@ const RekapPage = ({ trips = [], inspections = [] }) => {
   );
 };
 
-// 🔥 KELOLA USER & ADMIN PANEL COMPONENT
+// 🔥 KELOLA USER COMPONENT
 const ManageUsers = ({ onBack, shiftRules, setShiftRules, onForceUnlock }) => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'pengemudi', trayek: '', bus: '' });
@@ -435,6 +397,10 @@ const ManageUsers = ({ onBack, shiftRules, setShiftRules, onForceUnlock }) => {
 function App() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState("beranda");
+  
+  // 🔥 STATE BARU: KHUSUS BUAT LOADING SUBMIT FORM (ANTI-SPAM BE)
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const [tripStatus, setTripStatus] = useState("belum_mulai");
   const [preparationData, setPreparationData] = useState(null);
   const [tripData, setTripData] = useState(null);
@@ -455,7 +421,17 @@ function App() {
   };
 
   const handleLogout = () => { setUser(null); setTripStatus("belum_mulai"); setCurrentPage("beranda"); };
-  const handleStartInspection = () => setCurrentPage("persiapan");
+  
+  // 🔥 FUNGSI BUNGKUSAN (WRAPPER) BUAT NGASIH DELAY LOADING DI TIAP TRANSAKSI FORM
+  const processFormStep = (actionFunc) => {
+    setIsProcessing(true); // Nyalain Loading
+    setTimeout(() => {
+      actionFunc(); // Jalanin fungsinya setelah 800ms
+      setIsProcessing(false); // Matiin Loading
+    }, 800);
+  };
+
+  const handleStartInspection = () => processFormStep(() => setCurrentPage("persiapan"));
 
   const handleInspectionSuccess = (report) => {
     const timestamp = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
@@ -505,19 +481,22 @@ function App() {
 
   const handleResetLogs = () => { setInspections([]); setTrips([]); setDriverReports([]); setTripStatus("belum_mulai"); };
 
-  const handleMenuNavigation = (menuId) => {
+  // 🔥 NAVIGASI MENU SEKARANG INSTAN (NO LOADING) 
+  const handleMenuNavigation = (targetMenuOrPage) => {
+    let finalPage = targetMenuOrPage;
     if (user?.role?.toLowerCase() === 'admin') {
-      if (menuId === 'riwayatdriver') setCurrentPage('riwayatdriver');
-      else if (menuId === 'rekap') setCurrentPage('rekap');
-      else if (menuId === 'kelolauser') setCurrentPage('kelolauser');
-      else if (menuId === 'akun') setCurrentPage('akun');
-      else setCurrentPage('riwayatdriver');
+      if (targetMenuOrPage === 'riwayatdriver') finalPage = 'riwayatdriver';
+      else if (targetMenuOrPage === 'rekap') finalPage = 'rekap';
+      else if (targetMenuOrPage === 'kelolauser') finalPage = 'kelolauser';
+      else if (targetMenuOrPage === 'akun') finalPage = 'akun';
+      else finalPage = 'riwayatdriver';
     } else {
-      if (menuId === 'laporan') setCurrentPage('persiapan');
-      else if (menuId === 'riwayat') setCurrentPage('ringkasan');
-      else if (menuId === 'akun') setCurrentPage('akun');
-      else setCurrentPage(menuId);
+      if (targetMenuOrPage === 'laporan') finalPage = 'persiapan';
+      else if (targetMenuOrPage === 'riwayat') finalPage = 'ringkasan';
+      else if (targetMenuOrPage === 'akun') finalPage = 'akun';
+      else if (targetMenuOrPage === 'beranda') finalPage = 'beranda';
     }
+    setCurrentPage(finalPage);
   };
 
   const renderLockedScreen = () => {
@@ -537,7 +516,7 @@ function App() {
           <p className="text-xl font-black text-[#C5221F]">Shift {nextShiftName} - {nextShiftTime}:00 WIB</p>
         </div>
         <p className="text-xs font-bold text-slate-500 max-w-xs leading-relaxed">Anda sudah menyelesaikan form shift sebelumnya. Cek Beranda untuk melihat progress atau hubungi Admin jika butuh akses mendesak.</p>
-        <button onClick={() => setCurrentPage('beranda')} className="mt-2 w-full max-w-xs bg-[#00206B] hover:bg-[#00174E] text-white py-4 rounded-xl font-extrabold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+        <button onClick={() => handleMenuNavigation('beranda')} className="mt-2 w-full max-w-xs bg-[#00206B] hover:bg-[#00174E] text-white py-4 rounded-xl font-extrabold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
@@ -568,40 +547,55 @@ function App() {
     else if (currentPage === "penumpang") setCurrentPage("titikstart");
     else if (currentPage === "detaillaporan") setCurrentPage("riwayatdriver");
     else if (currentPage === "akun" || currentPage === "rekap" || currentPage === "kelolauser" || currentPage === "riwayatdriver") {
-      setCurrentPage(user?.role?.toLowerCase() === 'admin' ? 'riwayatdriver' : 'beranda');
+      handleMenuNavigation('beranda');
     } else {
-      setCurrentPage(user?.role?.toLowerCase() === 'admin' ? 'riwayatdriver' : 'beranda');
+      handleMenuNavigation('beranda');
     }
   };
 
   const renderPage = () => {
     if (!user) return <Login onLoginSuccess={handleLogin} />;
+    
+    // 🔥 RENDER LOADING HANYA SAAT SUBMIT FORM / PINDAH STEP LAPORAN!
+    if (isProcessing) {
+      return (
+        <div className="flex flex-col items-center justify-center h-[70vh] space-y-6 animate-[fadeIn_0.3s_ease-out]">
+           <div className="relative w-16 h-16">
+              <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-[#00206B] rounded-full border-t-transparent animate-spin"></div>
+           </div>
+           <h3 className="text-[#00206B] font-black text-sm tracking-[0.2em] uppercase animate-pulse">Memproses Data... 🚀</h3>
+        </div>
+      );
+    }
+
     switch (currentPage) {
       case "beranda":
         if (user?.role?.toLowerCase() === 'admin') { setCurrentPage('riwayatdriver'); return null; }
         return <Beranda 
-          activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} stats={{ totalInspection: inspections.length, activeTrips: trips.length }}
+          activeUser={user} tripStatus={tripStatus} onQuickAction={handleMenuNavigation} onLogout={handleLogout} onStartInspection={handleStartInspection} stats={{ totalInspection: inspections.length, activeTrips: trips.length }}
           currentShift={currentShift} isLaporanLocked={isLaporanLocked} shiftRules={shiftRules} 
-          onStartSiang={() => { setIsLaporanLocked(false); setCurrentPage("titikstart"); }}
+          onStartSiang={() => processFormStep(() => { setIsLaporanLocked(false); setCurrentPage("titikstart"); })}
         />;
       case "persiapan":
         if (isLaporanLocked) return renderLockedScreen();
-        return <Persiapan onNext={(data) => { setPreparationData(data); setCurrentPage("inspeksi"); }} />;
+        // 🔥 SEMUA TRANSAKSI FORM DIBUNGKUS SAMA processFormStep()
+        return <Persiapan onNext={(data) => processFormStep(() => { setPreparationData(data); setCurrentPage("inspeksi"); })} />;
       case "inspeksi":
         if (isLaporanLocked) return renderLockedScreen();
         if (!preparationData) { setCurrentPage("persiapan"); return null; }
-        return <Inspeksi preparationData={preparationData} onNext={handleInspectionSuccess} onReportIssue={(report) => { setPreparationData(report); setCurrentPage("kendala"); }} />;
+        return <Inspeksi preparationData={preparationData} onNext={(report) => processFormStep(() => handleInspectionSuccess(report))} onReportIssue={(report) => processFormStep(() => { setPreparationData(report); setCurrentPage("kendala"); })} />;
       case "kendala":
         if (isLaporanLocked) return renderLockedScreen();
         if (!preparationData) { setCurrentPage("persiapan"); return null; }
-        return <Kendala data={preparationData} onSubmit={handleInspectionIssues} />;
+        return <Kendala data={preparationData} onSubmit={(report) => processFormStep(() => handleInspectionIssues(report))} />;
       case "titikstart":
         if (isLaporanLocked) return renderLockedScreen();
-        return <TitikStart onNext={(data) => { setTripData(data); setCurrentPage("penumpang"); }} />;
+        return <TitikStart onNext={(data) => processFormStep(() => { setTripData(data); setCurrentPage("penumpang"); })} />;
       case "penumpang":
         if (isLaporanLocked) return renderLockedScreen();
         if (!tripData) { setCurrentPage("titikstart"); return null; }
-        return <Penumpang tripData={tripData} onSubmit={handleTripSubmit} />;
+        return <Penumpang tripData={tripData} onSubmit={(report) => processFormStep(() => handleTripSubmit(report))} />;
       case "ringkasan":
         return <RingkasanHarian inspections={inspections} trips={trips} currentShift={currentShift} onResetAllLogs={handleResetLogs} />;
       case "riwayatdriver":
@@ -619,7 +613,7 @@ function App() {
       case "akun":
         return <ProfilAkun user={user} onLogout={handleLogout} />;
       default:
-        return user?.role?.toLowerCase() === 'admin' ? <div className="p-10 text-center"><h2 className="text-3xl font-black">Riwayat Driver</h2></div> : <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={setCurrentPage} onLogout={handleLogout} onStartInspection={handleStartInspection} />;
+        return user?.role?.toLowerCase() === 'admin' ? <div className="p-10 text-center"><h2 className="text-3xl font-black">Riwayat Driver</h2></div> : <Beranda activeUser={user} tripStatus={tripStatus} onQuickAction={handleMenuNavigation} onLogout={handleLogout} onStartInspection={handleStartInspection} />;
     }
   };
 
@@ -642,7 +636,7 @@ function App() {
           onMenuClick={handleMenuNavigation}
         >
           {renderPage()}
-          <BottomNav user={user} activeTab={currentPage} setActiveTab={setCurrentPage} />
+          <BottomNav user={user} activeTab={currentPage} setActiveTab={handleMenuNavigation} />
         </MobileLayout>
       )}
     </div>
