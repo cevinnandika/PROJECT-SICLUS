@@ -1,6 +1,6 @@
 # FRONTEND-SICLUS Code Repository
 
-Berikut adalah salinan lengkap dan mutakhir dari seluruh berkas kode yang ada di dalam repository `PROJECT-SICLUS` tanpa modifikasi sama sekali.
+Berikut adalah salinan lengkap dan mutakhir dari seluruh berkas kode yang ada di dalam repository `PROJECT-SICLUS` berdasarkan flow terbaru tanpa modifikasi sama sekali.
 
 ## Daftar Berkas
 
@@ -44,7 +44,7 @@ Berikut adalah salinan lengkap dan mutakhir dari seluruh berkas kode yang ada di
 ## 1. `.env`
 
 ```env
-VITE_API_BASE_URL=https://paramount-kooky-consuming.ngrok-free.dev/api
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
 ---
@@ -1307,6 +1307,7 @@ function App() {
       case "riwayatdriver":
         return (
           <RiwayatDriver
+            user={user}
             driverReports={driverReports}
             onViewDetail={(report) => {
               setSelectedReport(report);
@@ -3862,28 +3863,36 @@ export default Rekap;
 ## 27. `src/pages/laporan/RiwayatDriver.jsx`
 
 ```jsx
-import React, { useState, useEffect } from "react";
-import { apiService } from "../../services/api";
+import React, { useState, useEffect } from 'react';
+import { apiService } from '../../services/api';
 
-const RiwayatDriver = ({ onViewDetail }) => {
+const RiwayatDriver = ({ onViewDetail, user }) => { 
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Otomatis narik data dari Backend pas layar ini dibuka
   useEffect(() => {
-    apiService
-      .getRiwayatDriver()
-      .then((res) => {
+    if (!user) return;
+
+    // Menarik data berdasarkan hak akses (Role)
+    const fetchRiwayat = user.role.toLowerCase() === "admin" 
+      ? apiService.getRekapAdmin() 
+      : apiService.getRiwayatDriver();
+
+    fetchRiwayat
+      .then(res => {
         if (res.data) {
-          // Bikin data backend lu jadi ramah sama format UI Cevin
-          const formattedData = res.data.map((item) => ({
+          const formattedData = res.data.map(item => ({
             ...item,
-            driverName: "Anda",
+            driverName: user.role.toLowerCase() === "admin" ? item.id_supir : "Anda",
             date: item.tanggal,
             trayek: item.trayek,
             bus: item.bus,
-            submittedAt: item.trip_sessions.length > 0 ? "Terekam di Database" : "Belum Selesai",
+            submittedAt: item.trip_sessions && item.trip_sessions.length > 0 ? "Selesai Direkam" : "Menunggu Penyelesaian"
           }));
+          
+          // Mengurutkan data laporan terbaru di urutan teratas
+          formattedData.sort((a, b) => new Date(b.created_at || b.tanggal) - new Date(a.created_at || a.tanggal));
+
           setReports(formattedData);
         }
         setIsLoading(false);
@@ -3891,17 +3900,21 @@ const RiwayatDriver = ({ onViewDetail }) => {
       .catch(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [user]);
 
   if (isLoading) {
-    return <div className="text-center p-10 font-bold text-[#00206B] animate-pulse">Narik Data dari Server... ⏳</div>;
+    return <div className="text-center p-10 font-bold text-[#00206B] animate-pulse">Memuat Data Laporan Operasional... ⏳</div>;
   }
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="space-y-1">
-        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Riwayat Driver</h2>
-        <p className="text-sm text-slate-400 font-semibold mt-0.5">Laporan yang ditarik dari Database</p>
+        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">
+          {user?.role?.toLowerCase() === "admin" ? "Laporan Seluruh Pengemudi" : "Riwayat Perjalanan Anda"}
+        </h2>
+        <p className="text-sm text-slate-400 font-semibold mt-0.5">
+          {user?.role?.toLowerCase() === "admin" ? "Pemantauan data laporan operasional dari seluruh armada." : "Catatan operasional harian yang telah Anda laporkan."}
+        </p>
       </div>
 
       {reports.length > 0 ? (
@@ -3910,19 +3923,15 @@ const RiwayatDriver = ({ onViewDetail }) => {
             <div key={index} onClick={() => onViewDetail(report)} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
-                  {report.driverName?.charAt(0) || "?"}
+                  {report.driverName?.charAt(0).toUpperCase() || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-extrabold text-[#00206B] truncate">{report.driverName}</h3>
-                  <p className="text-xs text-slate-400 font-semibold mt-0.5">
-                    {report.date} • {report.trayek} • {report.bus}
-                  </p>
+                  <p className="text-xs text-slate-400 font-semibold mt-0.5">{report.date} • {report.trayek} • {report.bus}</p>
                   <p className="text-[10px] text-emerald-600 font-bold mt-1">Status: {report.submittedAt}</p>
                 </div>
                 <div className="flex items-center gap-2 text-slate-400">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </div>
               </div>
             </div>
@@ -3931,17 +3940,10 @@ const RiwayatDriver = ({ onViewDetail }) => {
       ) : (
         <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-12 text-center">
           <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
+            <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
           </div>
-          <h3 className="text-lg font-extrabold text-slate-600 m-0">Belum Ada Laporan</h3>
-          <p className="text-sm text-slate-500 font-medium mt-1">Laporan dari pengemudi akan muncul di sini</p>
+          <h3 className="text-lg font-extrabold text-slate-600 m-0">Belum Ada Data Laporan</h3>
+          <p className="text-sm text-slate-500 font-medium mt-1">Data operasional pengemudi akan tampil di sini.</p>
         </div>
       )}
     </div>
@@ -3956,41 +3958,33 @@ export default RiwayatDriver;
 ## 28. `src/pages/perjalanan/TitikStart.jsx`
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const TitikStart = ({ onNext }) => {
-  const [odometer, setOdometer] = useState('67013');
+  const [odometer, setOdometer] = useState("67013");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (odometer) {
       onNext({
         odometer,
-        terminal: 'Terminal Kertajaya',
-        route: 'Rute Pagi - SMPN 1 Mojokerto',
-        arrivalTime: '06:10 WIB'
+        terminal: "Terminal Kertajaya",
+        route: "Rute Pagi - SMPN 1 Mojokerto",
+        arrivalTime: "06:10 WIB",
       });
     }
   };
 
   return (
-    // 🔥 BELAJAR DISINI: Lebar kontainer diubah jadi max-w-4xl biar seragam dan nggak bantet!
     <div className="space-y-6 text-left max-w-4xl mx-auto pb-6">
-      
       {/* Title */}
       <div className="space-y-1">
-        {/* 🔥 BELAJAR DISINI: Font judul dibesarin (text-2xl/3xl) biar seragam sama halaman Beranda/Riwayat */}
-        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">
-          Tiba di Titik Start
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Tiba di Titik Start</h2>
         <p className="text-sm text-slate-400 font-semibold mt-0.5">Laporan Kedatangan Bus</p>
       </div>
 
-      {/* 🔥 BELAJAR DISINI: Ilustrasi Peta (Mock Map) DIBABAT HABIS SESUAI PERMINTAAN! 🧹 */}
-
       {/* Wrapper Card Biar Rapi di Desktop */}
       <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-6">
-        
         {/* Automatic Time Card */}
         <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
@@ -4006,7 +4000,7 @@ const TitikStart = ({ onNext }) => {
               <span className="text-xl font-black text-[#00206B] mt-0.5 block">06:10 WIB</span>
             </div>
           </div>
-          
+
           {/* On Time Badge */}
           <div className="flex items-center gap-1.5 bg-[#E6F7ED] text-[#137333] px-3 py-1.5 rounded-full font-extrabold text-xs">
             <span>✓</span>
@@ -4017,9 +4011,7 @@ const TitikStart = ({ onNext }) => {
         {/* Speedometer Input */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-3">
-            <label className="block text-sm font-bold text-[#00206B] uppercase tracking-wide">
-              Odometer Kendaraan (KM)
-            </label>
+            <label className="block text-sm font-bold text-[#00206B] uppercase tracking-wide">Odometer Kendaraan (KM)</label>
             <div className="relative flex items-center bg-white border-2 border-[#00206B] rounded-2xl px-5 py-4 shadow-sm">
               <input
                 type="number"
@@ -4031,9 +4023,7 @@ const TitikStart = ({ onNext }) => {
               />
               <span className="absolute right-5 text-sm font-black text-[#00206B]">KM</span>
             </div>
-            <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-              Pastikan angka sesuai dengan dashboard bus saat tiba.
-            </p>
+            <p className="text-xs text-slate-500 font-semibold leading-relaxed">Pastikan angka sesuai dengan dashboard bus saat tiba.</p>
           </div>
 
           {/* Confirm Button */}
