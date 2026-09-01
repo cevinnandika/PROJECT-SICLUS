@@ -1,38 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const TitikStart = ({ onNext }) => {
-  const [odometer, setOdometer] = useState('67013');
+  const [odometer, setOdometer] = useState("67013");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (odometer) {
       onNext({
         odometer,
-        terminal: 'Terminal Kertajaya',
-        route: 'Rute Pagi - SMPN 1 Mojokerto',
-        arrivalTime: '06:10 WIB'
+        terminal: "Terminal Kertajaya",
+        route: "Rute Pagi - SMPN 1 Mojokerto",
+        arrivalTime: "06:10 WIB",
       });
     }
   };
 
   return (
-    // 🔥 BELAJAR DISINI: Lebar kontainer diubah jadi max-w-4xl biar seragam dan nggak bantet!
     <div className="space-y-6 text-left max-w-4xl mx-auto pb-6">
-      
       {/* Title */}
       <div className="space-y-1">
-        {/* 🔥 BELAJAR DISINI: Font judul dibesarin (text-2xl/3xl) biar seragam sama halaman Beranda/Riwayat */}
-        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">
-          Tiba di Titik Start
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">Tiba di Titik Start</h2>
         <p className="text-sm text-slate-400 font-semibold mt-0.5">Laporan Kedatangan Bus</p>
       </div>
 
-      {/* 🔥 BELAJAR DISINI: Ilustrasi Peta (Mock Map) DIBABAT HABIS SESUAI PERMINTAAN! 🧹 */}
-
       {/* Wrapper Card Biar Rapi di Desktop */}
       <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-6">
-        
         {/* Automatic Time Card */}
         <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
@@ -48,7 +40,7 @@ const TitikStart = ({ onNext }) => {
               <span className="text-xl font-black text-[#00206B] mt-0.5 block">06:10 WIB</span>
             </div>
           </div>
-          
+
           {/* On Time Badge */}
           <div className="flex items-center gap-1.5 bg-[#E6F7ED] text-[#137333] px-3 py-1.5 rounded-full font-extrabold text-xs">
             <span>✓</span>
@@ -59,9 +51,7 @@ const TitikStart = ({ onNext }) => {
         {/* Speedometer Input */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-3">
-            <label className="block text-sm font-bold text-[#00206B] uppercase tracking-wide">
-              Odometer Kendaraan (KM)
-            </label>
+            <label className="block text-sm font-bold text-[#00206B] uppercase tracking-wide">Odometer Kendaraan (KM)</label>
             <div className="relative flex items-center bg-white border-2 border-[#00206B] rounded-2xl px-5 py-4 shadow-sm">
               <input
                 type="number"
@@ -73,9 +63,7 @@ const TitikStart = ({ onNext }) => {
               />
               <span className="absolute right-5 text-sm font-black text-[#00206B]">KM</span>
             </div>
-            <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-              Pastikan angka sesuai dengan dashboard bus saat tiba.
-            </p>
+            <p className="text-xs text-slate-500 font-semibold leading-relaxed">Pastikan angka sesuai dengan dashboard bus saat tiba.</p>
           </div>
 
           {/* Confirm Button */}
