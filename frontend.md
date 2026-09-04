@@ -1,104 +1,35 @@
-# FRONTEND-SICLUS - Dokumentasi Source Code Inti
+# Dokumentasi Source Code Frontend SICLUS
 
-Dokumen ini berisi seluruh **source code inti aplikasi** dan **struktur folder** yang digunakan langsung untuk menjalankan sistem `PROJECT-SICLUS` saat ini tanpa menyertakan konfigurasi build/tooling eksternal seperti `package.json`, `vite.config.js`, dan `.gitignore`.
+Total file: 21
 
-## 📁 Struktur File & Folder
-
-```text
-src/
-├── assets/
-│   └── react.svg
-├── components/
-│   ├── icons/
-│   │   └── Icon.jsx
-│   ├── layout/
-│   │   ├── AppLayout.jsx
-│   │   └── BottomNav.jsx
-│   └── ui/
-│       └── InspectionToggle.jsx
-├── pages/
-│   ├── admin/
-│   │   ├── BerandaAdmin.jsx
-│   │   ├── ManageDriver.jsx
-│   │   ├── ProfilAdmin.jsx
-│   │   ├── RegisterDriver.jsx
-│   │   ├── RekapDriver.jsx
-│   │   └── RiwayatAdmin.jsx
-├── pages/
-│   ├── auth/
-│   │   └── Login.jsx
-│   ├── beranda/
-│   │   └── RingkasanHarian.jsx
-│   └── driver/
-│       ├── BerandaDriver.jsx
-│       ├── DetailLaporan.jsx
-│       ├── LaporanDriver.jsx
-│       ├── ProfilDriver.jsx
-│       └── RiwayatDriver.jsx
-├── services/
-│   └── api.js
-├── App.jsx
-├── index.css
-└── Main.jsx
-```
+## Daftar File
+- [src/App.jsx](#srcappjsx)
+- [src/components/icons/Icon.jsx](#srccomponentsiconsiconjsx)
+- [src/components/layout/AppLayout.jsx](#srccomponentslayoutapplayoutjsx)
+- [src/components/layout/BottomNav.jsx](#srccomponentslayoutbottomnavjsx)
+- [src/components/ui/InspectionToggle.jsx](#srccomponentsuiinspectiontogglejsx)
+- [src/index.css](#srcindexcss)
+- [src/main.jsx](#srcmainjsx)
+- [src/pages/admin/BerandaAdmin.jsx](#srcpagesadminberandaadminjsx)
+- [src/pages/admin/ManageDriver.jsx](#srcpagesadminmanagedriverjsx)
+- [src/pages/admin/ProfilAdmin.jsx](#srcpagesadminprofiladminjsx)
+- [src/pages/admin/RegisterDriver.jsx](#srcpagesadminregisterdriverjsx)
+- [src/pages/admin/RekapDriver.jsx](#srcpagesadminrekapdriverjsx)
+- [src/pages/admin/RiwayatAdmin.jsx](#srcpagesadminriwayatadminjsx)
+- [src/pages/auth/Login.jsx](#srcpagesauthloginjsx)
+- [src/pages/beranda/RingkasanHarian.jsx](#srcpagesberandaringkasanharianjsx)
+- [src/pages/driver/BerandaDriver.jsx](#srcpagesdriverberandadriverjsx)
+- [src/pages/driver/DetailLaporan.jsx](#srcpagesdriverdetaillaporanjsx)
+- [src/pages/driver/LaporanDriver.jsx](#srcpagesdriverlaporandriverjsx)
+- [src/pages/driver/ProfilDriver.jsx](#srcpagesdriverprofildriverjsx)
+- [src/pages/driver/RiwayatDriver.jsx](#srcpagesdriverriwayatdriverjsx)
+- [src/services/api.js](#srcservicesapijs)
 
 ---
 
-## 📑 Daftar Berkas Source Code
+### src/App.jsx
 
-1. [`src/Main.jsx`](#1-srcmainjsx)
-2. [`src/App.jsx`](#2-srcappjsx)
-3. [`src/index.css`](#3-srcindexcss)
-4. [`src/services/api.js`](#4-srcservicesapijs)
-5. [`src/components/layout/AppLayout.jsx`](#5-srccomponentslayoutapplayoutjsx)
-6. [`src/components/layout/BottomNav.jsx`](#6-srccomponentslayoutbottomnavjsx)
-7. [`src/components/ui/InspectionToggle.jsx`](#7-srccomponentsuiinspectiontogglejsx)
-8. [`src/components/icons/Icon.jsx`](#8-srccomponentsiconsiconjsx)
-9. [`src/pages/auth/Login.jsx`](#9-srcpagesauthloginjsx)
-10. [`src/pages/admin/BerandaAdmin.jsx`](#10-srcpagesadminberandaadminjsx)
-11. [`src/pages/admin/ManageDriver.jsx`](#11-srcpagesadminmanagedriverjsx)
-12. [`src/pages/admin/ProfilAdmin.jsx`](#12-srcpagesadminprofiladminjsx)
-13. [`src/pages/admin/RegisterDriver.jsx`](#13-srcpagesadminregisterdriverjsx)
-14. [`src/pages/admin/RekapDriver.jsx`](#14-srcpagesadminrekapdriverjsx)
-15. [`src/pages/admin/RiwayatAdmin.jsx`](#15-srcpagesadminriwayatadminjsx)
-16. [`src/pages/beranda/RingkasanHarian.jsx`](#16-srcpagesberandaringkasanharianjsx)
-17. [`src/pages/driver/BerandaDriver.jsx`](#17-srcpagesdriverberandadriverjsx)
-18. [`src/pages/driver/DetailLaporan.jsx`](#18-srcpagesdriverdetaillaporanjsx)
-19. [`src/pages/driver/LaporanDriver.jsx`](#19-srcpagesdriverlaporandriverjsx)
-20. [`src/pages/driver/ProfilDriver.jsx`](#20-srcpagesdriverprofildriverjsx)
-21. [`src/pages/driver/RiwayatDriver.jsx`](#21-srcpagesdriverriwayatdriverjsx)
-
----
-
-## 1. `src/Main.jsx`
-
-```jsx
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom' 
-import './index.css'
-import App from './App.jsx'
-
-// Import Font
-import '@fontsource/poppins/400.css'
-import '@fontsource/poppins/500.css'
-import '@fontsource/poppins/600.css'
-import '@fontsource/poppins/700.css'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-)
-```
-
----
-
-## 2. `src/App.jsx`
-
-```jsx
+`jsx
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { apiService } from "./services/api";
@@ -144,9 +75,14 @@ function App() {
   const [tripStatus, setTripStatus] = useState("belum_mulai");
   const [driverReports, setDriverReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [currentShift, setCurrentShift] = useState("pagi");
-  const [isLaporanLocked, setIsLaporanLocked] = useState(false);
+  const [currentShift, setCurrentShift] = useState(() => localStorage.getItem("siclus_shift") || "pagi");
+  const [isLaporanLocked, setIsLaporanLocked] = useState(() => localStorage.getItem("siclus_locked") === "true");
   const [shiftRules, setShiftRules] = useState({ pagi: 5, siang: 12 });
+
+  useEffect(() => {
+    localStorage.setItem("siclus_shift", currentShift);
+    localStorage.setItem("siclus_locked", isLaporanLocked);
+  }, [currentShift, isLaporanLocked]);
 
   useEffect(() => {
     const token = localStorage.getItem("siclus_token");
@@ -186,6 +122,8 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("siclus_token");
     localStorage.removeItem("siclus_user");
+    localStorage.removeItem("siclus_shift");
+    localStorage.removeItem("siclus_locked");
     setUser(null);
     setTripStatus("belum_mulai");
     navigate("/login");
@@ -200,6 +138,26 @@ function App() {
   };
 
   const renderLockedScreen = () => {
+    // Tampilan khusus jika sudah kelar semua shift hari ini
+    if (currentShift === "selesai") {
+      return (
+        <div className="flex flex-col items-center justify-center p-8 mt-16 text-center space-y-5 animate-[fadeIn_0.3s]">
+          <div className="w-24 h-24 bg-[#E6F7ED] text-[#137333] rounded-full flex items-center justify-center border-4 border-[#BCECD2] shadow-sm">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          </div>
+          <h2 className="text-2xl font-black text-[#00206B] uppercase m-0">TUGAS SELESAI</h2>
+          <div className="bg-white border-2 border-slate-200 w-full max-w-sm p-4 rounded-2xl shadow-sm">
+            <p className="text-xs font-bold text-slate-500 mb-1">Anda telah menyelesaikan semua perjalanan hari ini.</p>
+            <p className="text-sm font-black text-[#00206B]">Laporan akan dibuka kembali besok pagi.</p>
+          </div>
+          <button onClick={() => navigate("/driver/beranda")} className="mt-2 w-full max-w-xs bg-[#00206B] text-white py-4 rounded-xl font-extrabold text-sm shadow-md">
+            Kembali ke Beranda
+          </button>
+        </div>
+      );
+    }
+
+    // Tampilan jeda antara shift Pagi ke Siang (Existing logic)
     const nextShiftName = currentShift === "siang" ? "Siang" : "Pagi (Besok)";
     const nextShiftTime = currentShift === "siang" ? shiftRules.siang : shiftRules.pagi;
     return (
@@ -264,9 +222,16 @@ function App() {
                         ) : (
                           <Laporan
                             user={user}
+                            currentShift={currentShift}
                             onFinishShift={() => {
-                              setCurrentShift(currentShift === "pagi" ? "siang" : "pagi");
-                              setIsLaporanLocked(currentShift === "pagi");
+                              if (currentShift === "pagi") {
+                                setCurrentShift("siang");
+                                setIsLaporanLocked(true);
+                              } else {
+                                // Jika shift siang beres, gembok laporan sampai besok!
+                                setCurrentShift("selesai");
+                                setIsLaporanLocked(true);
+                              }
                               setTripStatus("belum_mulai");
                               navigate("/driver/beranda");
                             }}
@@ -288,7 +253,7 @@ function App() {
                       }
                     />
                     <Route path="detail-laporan" element={<DetailLaporan report={selectedReport} onBack={() => navigate("/driver/riwayat")} />} />
-                    <Route path="akun" element={<ProfilDriver user={user} onLogout={handleLogout} />} /> {/* ✅ FIX: Pake ProfilDriver */}
+                    <Route path="akun" element={<ProfilDriver user={user} onLogout={handleLogout} onUpdateUser={setUser} />} /> {/* ✅ FIX: Pake ProfilDriver */}
                     <Route path="*" element={<Navigate to="beranda" replace />} />
                   </Routes>
                 </ProtectedRoute>
@@ -319,156 +284,22 @@ function App() {
 }
 
 export default App;
-```
+
+`
 
 ---
 
-## 3. `src/index.css`
+### src/components/icons/Icon.jsx
 
-```css
-@import "tailwindcss";
+`jsx
 
-:root {
-  --font-sans: 'Poppins', sans-serif;
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: #f1f5f9;
-}
-
-/* Hide scrollbar untuk horizontal scroll */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-```
+`
 
 ---
 
-## 4. `src/services/api.js`
+### src/components/layout/AppLayout.jsx
 
-```javascript
-import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
-
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// jwt token masuk
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("siclus_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
-
-// jwt token keluar
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("siclus_token");
-      localStorage.removeItem("siclus_user");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  },
-);
-
-export const apiService = {
-  // --- AUTH & USER ---
-  login: async (email, password) => {
-    const response = await apiClient.post("/auth/login", { email, password });
-    return response.data;
-  },
-
-  // ==========================================
-  // ZONA DRIVER
-  // ==========================================
-  getJadwalDriver: async () => {
-    const response = await apiClient.get("/driver/jadwal");
-    return response.data;
-  },
-  getRiwayatDriver: async () => {
-    const response = await apiClient.get("/driver/riwayat");
-    return response.data;
-  },
-  mulaiLaporan: async (data) => {
-    const response = await apiClient.post("/laporan/mulai", data);
-    return response.data;
-  },
-  submitInspeksi: async (laporanId, data) => {
-    const response = await apiClient.post(`/laporan/inspeksi?laporan_id=${laporanId}`, data);
-    return response.data;
-  },
-  uploadSelfie: async (fileBlob) => {
-    const formData = new FormData();
-    formData.append("foto", fileBlob);
-    const response = await apiClient.post("/laporan/upload-selfie", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-  submitCP1: async (laporanId, data) => {
-    const response = await apiClient.post(`/laporan/sesi/cp1?laporan_id=${laporanId}`, data);
-    return response.data;
-  },
-  submitCP2: async (sesiId, data) => {
-    const response = await apiClient.put(`/laporan/sesi/cp2/${sesiId}`, data);
-    return response.data;
-  },
-  submitCP3: async (sesiId, data) => {
-    const response = await apiClient.put(`/laporan/sesi/cp3/${sesiId}`, data);
-    return response.data;
-  },
-  submitCP4: async (sesiId, data) => {
-    const response = await apiClient.put(`/laporan/sesi/cp4/${sesiId}`, data);
-    return response.data;
-  },
-
-  // ==========================================
-  // ZONA ADMIN
-  // ==========================================
-  getDashboardAdmin: async () => {
-    const response = await apiClient.get("/admin/dashboard");
-    return response.data;
-  },
-  getRekapAdmin: async () => {
-    const response = await apiClient.get("/admin/rekap");
-    return response.data;
-  },
-  getRiwayatHarianAdmin: async () => {
-    const response = await apiClient.get("/admin/riwayat-harian");
-    return response.data;
-  },
-  getUsersAdmin: async () => {
-    const response = await apiClient.get("/admin/users");
-    return response.data;
-  },
-};
-
-export default apiClient;
-```
-
----
-
-## 5. `src/components/layout/AppLayout.jsx`
-
-```jsx
+`jsx
 import React, { useState } from 'react';
 
 const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'beranda', onMenuClick = () => {}, user = null }) => {
@@ -523,10 +354,16 @@ const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'be
         </nav>
         <div className="p-3 mb-2 border-t border-white/5 mt-auto">
           <div onClick={() => onMenuClick('akun')} className="flex items-center p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 cursor-pointer transition-colors group" title={!isSidebarOpen ? 'Buka Akun' : ''}>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center flex-shrink-0 text-white shadow-md">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden bg-slate-100 border border-white/10">
+              {user?.foto_profil ? (
+                <img src={user.foto_profil} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              )}
             </div>
             <div className={`overflow-hidden transition-all duration-300 flex flex-col justify-center ${isSidebarOpen ? 'ml-3 w-full opacity-100' : 'w-0 opacity-0'}`}>
               <span className="text-sm font-bold text-white truncate group-hover:text-cyan-200 transition-colors">{user?.name || 'Profil Saya'}</span>
@@ -560,20 +397,25 @@ const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'be
 };
 
 export default AppLayout;
-```
+`
 
 ---
 
-## 6. `src/components/layout/BottomNav.jsx`
+### src/components/layout/BottomNav.jsx
 
-```jsx
+`jsx
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const BottomNav = ({ activeTab, setActiveTab, user = null }) => {
+const BottomNav = ({ user = null }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname.split("/").pop(); // Ambil path terakhir
+
   const adminNavItems = [
-    { id: 'riwayatdriver', label: 'Riwayat', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg> },
+    { id: 'riwayat', label: 'Riwayat', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg> },
     { id: 'rekap', label: 'Rekap', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 13v-1m4 1v-3m4 3V8M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg> },
-    { id: 'kelolauser', label: 'Kelola', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg> },
+    { id: 'kelola-user', label: 'Kelola', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg> },
     { id: 'akun', label: 'Akun', icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> }
   ];
 
@@ -585,17 +427,30 @@ const BottomNav = ({ activeTab, setActiveTab, user = null }) => {
   ];
 
   const navItems = user?.role?.toLowerCase() === 'admin' ? adminNavItems : driverNavItems;
+  const baseRoute = user?.role?.toLowerCase() === 'admin' ? '/admin' : '/driver';
+
+  const handleNavClick = (menuId) => {
+    navigate(`${baseRoute}/${menuId}`);
+  };
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 shadow-lg">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 shadow-lg pb-safe">
       <div className="flex items-center justify-around px-2 py-3">
         {navItems.map((item) => {
-          const isReportTabActive = item.id === 'laporan' && (activeTab === 'persiapan' || activeTab === 'inspeksi' || activeTab === 'kendala' || activeTab === 'laporan');
-          const isRiwayatTabActive = (item.id === 'riwayat' || item.id === 'riwayatdriver') && (activeTab === 'ringkasan' || activeTab === 'riwayat' || activeTab === 'detaillaporan');
-          const isActive = activeTab === item.id || isReportTabActive || isRiwayatTabActive;
+          // Cek apakah item aktif berdasarkan path URL saat ini
+          const isReportTabActive = item.id === 'laporan' && currentPath === 'laporan';
+          const isRiwayatTabActive = item.id === 'riwayat' && (currentPath === 'riwayat' || currentPath === 'detail-laporan');
+          const isActive = currentPath === item.id || isReportTabActive || isRiwayatTabActive;
+
           return (
-            <button key={item.id} onClick={() => { if (item.id === 'laporan') setActiveTab('persiapan'); else if (item.id === 'riwayat') setActiveTab('ringkasan'); else setActiveTab(item.id); }} className={`flex flex-col items-center justify-center flex-1 py-2.5 rounded-2xl transition-all duration-200 ${isActive ? 'bg-[#66FFAA]/40 text-[#006633] shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}>
-              <div className="mb-1">{item.icon}</div>
+            <button 
+              key={item.id} 
+              onClick={() => handleNavClick(item.id)} 
+              className={`flex flex-col items-center justify-center flex-1 py-2.5 rounded-2xl transition-all duration-200 ${isActive ? 'bg-[#66FFAA]/40 text-[#006633] shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+            >
+              <div className={`mb-1 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`}>
+                {item.icon}
+              </div>
               <span className={`text-[11px] font-bold whitespace-nowrap ${isActive ? 'font-extrabold' : 'font-medium'}`}>{item.label}</span>
             </button>
           );
@@ -606,13 +461,13 @@ const BottomNav = ({ activeTab, setActiveTab, user = null }) => {
 };
 
 export default BottomNav;
-```
+`
 
 ---
 
-## 7. `src/components/ui/InspectionToggle.jsx`
+### src/components/ui/InspectionToggle.jsx
 
-```jsx
+`jsx
 import React from 'react';
 
 const InspectionToggle = ({ label, isChecked, onChange }) => {
@@ -638,221 +493,75 @@ const InspectionToggle = ({ label, isChecked, onChange }) => {
 };
 
 export default InspectionToggle;
-```
+
+`
 
 ---
 
-## 8. `src/components/icons/Icon.jsx`
+### src/index.css
 
-```jsx
+`css
+@import "tailwindcss";
 
-```
+:root {
+  --font-sans: 'Poppins', sans-serif;
+}
 
----
+body {
+  font-family: var(--font-sans);
+  background-color: #f1f5f9;
+}
 
-## 9. `src/pages/auth/Login.jsx`
+/* Hide scrollbar untuk horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-```jsx
-import React, { useState, useEffect } from "react";
-import { apiService } from "../../services/api";
-
-const Login = ({ onLoginSuccess }) => {
-  const [driverId, setDriverId] = useState("");
-  const [pin, setPin] = useState("");
-  const [showPin, setShowPin] = useState(false);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      // 1. Tembak API Login (ngelewatin apiService yang udah disetting axios)
-      const response = await apiService.login(driverId, pin);
-
-      // 2. SIMPAN TIKET VIP (JWT) KE BRANKAS BROWSER!
-      localStorage.setItem("siclus_token", response.access_token);
-
-      // 3. Rapihin data dari Backend lu biar gampang dibaca FE Cevin
-      const userData = {
-        id: response.user.id,
-        name: response.user.nama_lengkap,
-        email: response.user.email,
-        role: response.user.role,
-        trayek: response.user.trayek,
-        bus: response.user.bus,
-      };
-
-      setTimeout(() => {
-        onLoginSuccess(userData);
-      }, 500);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.detail) {
-        setError(err.response.data.detail);
-      } else {
-        setError("Terjadi kesalahan!");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen w-full bg-slate-950 flex items-center justify-center p-4 sm:p-6 lg:p-10 relative overflow-hidden font-sans">
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-32 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] bg-gradient-to-b from-blue-500 via-cyan-500 to-indigo-600 rounded-full blur-[80px] sm:blur-[120px] opacity-60 animate-pulse"></div>
-      <div
-        className="absolute -bottom-24 left-1/2 -translate-x-1/2 sm:-bottom-32 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] bg-gradient-to-t from-purple-600 via-indigo-700 to-pink-500 rounded-full blur-[80px] sm:blur-[120px] opacity-50 animate-pulse"
-        style={{ animationDelay: "2.5s" }}
-      ></div>
-      <div
-        className={`relative w-full max-w-[360px] xs:max-w-[390px] sm:max-w-[440px] md:max-w-[480px] lg:max-w-[520px] bg-white/85 backdrop-blur-2xl rounded-[2.2rem] sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-white/70 transition-all duration-1000 ease-out transform ${isMounted ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}
-      >
-        <div className="flex flex-col items-center text-center mt-1 mb-5 sm:mb-8">
-          <div className="w-16 h-16 sm:w-22 sm:h-22 rounded-full bg-gradient-to-br from-[#00206B] via-[#00174E] to-[#000F33] flex items-center justify-center shadow-md border border-white/20">
-            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-              <rect x="4" y="3" width="16" height="15" rx="3" />
-              <line x1="4" y1="13" x2="20" y2="13" />
-              <circle cx="8" cy="9" r="1.5" fill="currentColor" />
-              <circle cx="16" cy="9" r="1.5" fill="currentColor" />
-              <path d="M6 18v1.5a0.5 0 000.5 0.5h1a0.5 0 000.5-0.5V18H6zM16 18v1.5a0.5 0 000.5 0.5h1a0.5 0 000.5-0.5V18h-2z" fill="currentColor" />
-            </svg>
-          </div>
-          <h2 className="text-4xl sm:text-3xl lg:text-4xl font-black text-[#00206B] tracking-tight mt-3 sm:mt-5 uppercase">SICLUS</h2>
-          <p className="text-[7px] sm:text-xs font-bold text-slate-500 mt-1 tracking-widest leading-relaxed uppercase">School Integrated Check-in & Logbook Unit System</p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          <div className={`overflow-hidden transition-all duration-300 ${error ? "max-h-20 opacity-100" : "max-h-0 opacity-0"}`}>
-            <div className="p-3 bg-red-500/10 border border-red-200/80 backdrop-blur-sm rounded-2xl text-xs text-red-600 font-bold text-center flex items-center justify-center gap-2">
-              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <span>{error}</span>
-            </div>
-          </div>
-          <div className="space-y-1 group">
-            <label className="text-[11px] sm:text-sm font-bold text-[#00206B] ml-1 uppercase tracking-wide">ID Pengemudi / Email</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 sm:pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#00206B] transition-colors">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
-                  <rect x="3" y="4" width="18" height="16" rx="2" />
-                  <circle cx="9" cy="11" r="2.5" />
-                  <path d="M15 9h3M15 13h3M15 17h3" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                required
-                value={driverId}
-                onChange={(e) => setDriverId(e.target.value)}
-                className="w-full bg-slate-100/80 border-2 border-slate-200/70 focus:border-[#00206B] focus:bg-white focus:ring-4 focus:ring-[#00206B]/10 rounded-2xl pl-10 sm:pl-11 pr-4 py-3 sm:py-4 text-xs sm:text-base font-bold text-[#00206B] placeholder-slate-400 outline-none transition-all duration-300"
-                placeholder="Contoh: admin@siclus.id"
-              />
-            </div>
-          </div>
-          <div className="space-y-1 group">
-            <label className="text-[11px] sm:text-sm font-bold text-[#00206B] ml-1 uppercase tracking-wide">PIN / Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 sm:pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#00206B] transition-colors">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
-              </div>
-              <input
-                type={showPin ? "text" : "password"}
-                required
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-slate-100/80 border-2 border-slate-200/70 focus:border-[#00206B] focus:bg-white focus:ring-4 focus:ring-[#00206B]/10 rounded-2xl pl-10 sm:pl-11 pr-11 py-3 sm:py-4 text-xs sm:text-base font-bold text-[#00206B] placeholder-slate-400 outline-none transition-all duration-300 tracking-wider"
-                placeholder="••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPin(!showPin)}
-                className="absolute inset-y-0 right-0 pr-3.5 sm:pr-4 flex items-center text-slate-400 hover:text-[#00206B] transition-colors focus:outline-none"
-              >
-                {showPin ? (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full relative overflow-hidden bg-gradient-to-r from-[#00206B] via-[#001D60] to-[#001240] text-white font-black py-3.5 sm:py-4 px-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,32,107,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(0,32,107,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 mt-3 sm:mt-6 group"
-          >
-            <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/30 opacity-20 group-hover:animate-[shine_1s] pointer-events-none" />
-            <div className="flex items-center justify-center gap-2 relative z-10 text-xs sm:text-base">
-              {isLoading ? (
-                <>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white/70" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>MEMPROSES...</span>
-                </>
-              ) : (
-                <>
-                  <span>MASUK SISTEM</span>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </>
-              )}
-            </div>
-          </button>
-        </form>
-
-        <div className="flex items-center justify-center gap-2 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-200/60">
-          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </div>
-          <span className="text-[9px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase">Siclus 1.0</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Login;
-```
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+`
 
 ---
 
-## 10. `src/pages/admin/BerandaAdmin.jsx`
+### src/main.jsx
 
-```jsx
+`jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom' 
+import './index.css'
+import App from './App.jsx'
 
-```
+// Import Font
+import '@fontsource/poppins/400.css'
+import '@fontsource/poppins/500.css'
+import '@fontsource/poppins/600.css'
+import '@fontsource/poppins/700.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
+`
 
 ---
 
-## 11. `src/pages/admin/ManageDriver.jsx`
+### src/pages/admin/BerandaAdmin.jsx
 
-```jsx
+`jsx
+
+`
+
+---
+
+### src/pages/admin/ManageDriver.jsx
+
+`jsx
 import React, { useState } from 'react';
 
 const ManageUsers = ({ onBack }) => {
@@ -1091,13 +800,14 @@ const ManageUsers = ({ onBack }) => {
 };
 
 export default ManageUsers;
-```
+
+`
 
 ---
 
-## 12. `src/pages/admin/ProfilAdmin.jsx`
+### src/pages/admin/ProfilAdmin.jsx
 
-```jsx
+`jsx
 import React from "react";
 
 const ProfilAdmin = ({ user, onLogout }) => {
@@ -1141,13 +851,14 @@ const ProfilAdmin = ({ user, onLogout }) => {
 };
 
 export default ProfilAdmin;
-```
+
+`
 
 ---
 
-## 13. `src/pages/admin/RegisterDriver.jsx`
+### src/pages/admin/RegisterDriver.jsx
 
-```jsx
+`jsx
 import React, { useState } from "react";
 
 const Register = ({ onRegisterSuccess, onBackToLogin }) => {
@@ -1309,13 +1020,14 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
 };
 
 export default Register;
-```
+
+`
 
 ---
 
-## 14. `src/pages/admin/RekapDriver.jsx`
+### src/pages/admin/RekapDriver.jsx
 
-```jsx
+`jsx
 import React, { useState, useEffect } from "react";
 import { apiService } from "../../services/api";
 
@@ -1387,13 +1099,14 @@ const Rekap = ({ trips = [], inspections = [] }) => {
 };
 
 export default Rekap;
-```
+
+`
 
 ---
 
-## 15. `src/pages/admin/RiwayatAdmin.jsx`
+### src/pages/admin/RiwayatAdmin.jsx
 
-```jsx
+`jsx
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../../services/api';
 
@@ -1484,13 +1197,206 @@ const RiwayatAdmin = ({ onViewDetail, user }) => {
 };
 
 export default RiwayatAdmin;
-```
+`
 
 ---
 
-## 16. `src/pages/beranda/RingkasanHarian.jsx`
+### src/pages/auth/Login.jsx
 
-```jsx
+`jsx
+import React, { useState, useEffect } from "react";
+import { apiService } from "../../services/api";
+
+const Login = ({ onLoginSuccess }) => {
+  const [driverId, setDriverId] = useState("");
+  const [pin, setPin] = useState("");
+  const [showPin, setShowPin] = useState(false);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // 1. Tembak API Login (ngelewatin apiService yang udah disetting axios)
+      const response = await apiService.login(driverId, pin);
+
+      // 2. SIMPAN TIKET VIP (JWT) KE BRANKAS BROWSER!
+      localStorage.setItem("siclus_token", response.access_token);
+
+      // 3. Rapihin data dari Backend lu biar gampang dibaca FE Cevin
+      const userData = {
+        id: response.user.id,
+        name: response.user.nama_lengkap,
+        email: response.user.email,
+        role: response.user.role,
+        trayek: response.user.trayek,
+        bus: response.user.bus,
+      };
+
+      setTimeout(() => {
+        onLoginSuccess(userData);
+      }, 500);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError("Terjadi kesalahan!");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-slate-950 flex items-center justify-center p-4 sm:p-6 lg:p-10 relative overflow-hidden font-sans">
+      <div className="absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-32 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] bg-gradient-to-b from-blue-500 via-cyan-500 to-indigo-600 rounded-full blur-[80px] sm:blur-[120px] opacity-60 animate-pulse"></div>
+      <div
+        className="absolute -bottom-24 left-1/2 -translate-x-1/2 sm:-bottom-32 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] bg-gradient-to-t from-purple-600 via-indigo-700 to-pink-500 rounded-full blur-[80px] sm:blur-[120px] opacity-50 animate-pulse"
+        style={{ animationDelay: "2.5s" }}
+      ></div>
+      <div
+        className={`relative w-full max-w-[360px] xs:max-w-[390px] sm:max-w-[440px] md:max-w-[480px] lg:max-w-[520px] bg-white/85 backdrop-blur-2xl rounded-[2.2rem] sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-white/70 transition-all duration-1000 ease-out transform ${isMounted ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}
+      >
+        <div className="flex flex-col items-center text-center mt-1 mb-5 sm:mb-8">
+          <div className="w-16 h-16 sm:w-22 sm:h-22 rounded-full bg-gradient-to-br from-[#00206B] via-[#00174E] to-[#000F33] flex items-center justify-center shadow-md border border-white/20">
+            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+              <rect x="4" y="3" width="16" height="15" rx="3" />
+              <line x1="4" y1="13" x2="20" y2="13" />
+              <circle cx="8" cy="9" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="9" r="1.5" fill="currentColor" />
+              <path d="M6 18v1.5a0.5 0 000.5 0.5h1a0.5 0 000.5-0.5V18H6zM16 18v1.5a0.5 0 000.5 0.5h1a0.5 0 000.5-0.5V18h-2z" fill="currentColor" />
+            </svg>
+          </div>
+          <h2 className="text-4xl sm:text-3xl lg:text-4xl font-black text-[#00206B] tracking-tight mt-3 sm:mt-5 uppercase">SICLUS</h2>
+          <p className="text-[7px] sm:text-xs font-bold text-slate-500 mt-1 tracking-widest leading-relaxed uppercase">School Integrated Check-in & Logbook Unit System</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className={`overflow-hidden transition-all duration-300 ${error ? "max-h-20 opacity-100" : "max-h-0 opacity-0"}`}>
+            <div className="p-3 bg-red-500/10 border border-red-200/80 backdrop-blur-sm rounded-2xl text-xs text-red-600 font-bold text-center flex items-center justify-center gap-2">
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <span>{error}</span>
+            </div>
+          </div>
+          <div className="space-y-1 group">
+            <label className="text-[11px] sm:text-sm font-bold text-[#00206B] ml-1 uppercase tracking-wide">ID Pengemudi / Email</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 sm:pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#00206B] transition-colors">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <circle cx="9" cy="11" r="2.5" />
+                  <path d="M15 9h3M15 13h3M15 17h3" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                required
+                value={driverId}
+                onChange={(e) => setDriverId(e.target.value)}
+                className="w-full bg-slate-100/80 border-2 border-slate-200/70 focus:border-[#00206B] focus:bg-white focus:ring-4 focus:ring-[#00206B]/10 rounded-2xl pl-10 sm:pl-11 pr-4 py-3 sm:py-4 text-xs sm:text-base font-bold text-[#00206B] placeholder-slate-400 outline-none transition-all duration-300"
+                placeholder="Contoh: admin@siclus.id"
+              />
+            </div>
+          </div>
+          <div className="space-y-1 group">
+            <label className="text-[11px] sm:text-sm font-bold text-[#00206B] ml-1 uppercase tracking-wide">PIN / Password</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 sm:pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#00206B] transition-colors">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+              </div>
+              <input
+                type={showPin ? "text" : "password"}
+                required
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className="w-full bg-slate-100/80 border-2 border-slate-200/70 focus:border-[#00206B] focus:bg-white focus:ring-4 focus:ring-[#00206B]/10 rounded-2xl pl-10 sm:pl-11 pr-11 py-3 sm:py-4 text-xs sm:text-base font-bold text-[#00206B] placeholder-slate-400 outline-none transition-all duration-300 tracking-wider"
+                placeholder="••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPin(!showPin)}
+                className="absolute inset-y-0 right-0 pr-3.5 sm:pr-4 flex items-center text-slate-400 hover:text-[#00206B] transition-colors focus:outline-none"
+              >
+                {showPin ? (
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full relative overflow-hidden bg-gradient-to-r from-[#00206B] via-[#001D60] to-[#001240] text-white font-black py-3.5 sm:py-4 px-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,32,107,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(0,32,107,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 mt-3 sm:mt-6 group"
+          >
+            <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/30 opacity-20 group-hover:animate-[shine_1s] pointer-events-none" />
+            <div className="flex items-center justify-center gap-2 relative z-10 text-xs sm:text-base">
+              {isLoading ? (
+                <>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white/70" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>MEMPROSES...</span>
+                </>
+              ) : (
+                <>
+                  <span>MASUK SISTEM</span>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </>
+              )}
+            </div>
+          </button>
+        </form>
+
+        <div className="flex items-center justify-center gap-2 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-200/60">
+          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <span className="text-[9px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase">Siclus 1.0</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
+
+`
+
+---
+
+### src/pages/beranda/RingkasanHarian.jsx
+
+`jsx
 import React from "react";
 
 const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAllLogs }) => {
@@ -1636,13 +1542,14 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
 };
 
 export default RingkasanHarian;
-```
+
+`
 
 ---
 
-## 17. `src/pages/driver/BerandaDriver.jsx`
+### src/pages/driver/BerandaDriver.jsx
 
-```jsx
+`jsx
 import React from "react";
 
 const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mulai", onStartInspection, currentShift, isLaporanLocked, shiftRules, onStartSiang }) => {
@@ -1657,8 +1564,9 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
   const siangHour = shiftRules?.siang || 12;
   const isSiangTime = currentHour >= siangHour;
   const renderKotakSiang = () => {
-    const isDisabled = currentShift === "pagi" || !isSiangTime;
-    const btnText = currentShift === "pagi" ? "SELESAIKAN PAGI DULU" : isSiangTime ? "MULAI LAPORAN SIANG" : `TUNGGU JAM ${siangHour}:00 WIB`;
+    // Tambahkan kondisi currentShift === "selesai"
+    const isDisabled = currentShift === "pagi" || !isSiangTime || currentShift === "selesai";
+    const btnText = currentShift === "selesai" ? "TUGAS SELESAI" : currentShift === "pagi" ? "SELESAIKAN PAGI DULU" : isSiangTime ? "MULAI LAPORAN SIANG" : `TUNGGU JAM ${siangHour}:00 WIB`;
 
     return (
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4 transition-all hover:shadow-md">
@@ -1759,7 +1667,7 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          {isLaporanLocked && currentShift === "siang" ? (
+          {(isLaporanLocked && currentShift === "siang") || currentShift === "selesai" ? (
             <div className="bg-white border-2 border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center space-y-4 min-h-[300px]">
               <div className="w-20 h-20 bg-[#E6F7ED] text-[#137333] rounded-full flex items-center justify-center border-4 border-[#BCECD2]">
                 <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -1767,9 +1675,13 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-black text-[#00206B] m-0">Shift Pagi Selesai</h3>
+                <h3 className="text-xl font-black text-[#00206B] m-0">
+                  {currentShift === "selesai" ? "TUGAS HARI INI SELESAI" : "Shift Pagi Selesai"}
+                </h3>
                 <p className="text-sm text-slate-500 font-medium mt-2 max-w-xs mx-auto">
-                  Anda telah menyelesaikan tugas pagi. Silakan istirahat, dan mulai laporan siang pada menu di samping ketika waktunya tiba.
+                  {currentShift === "selesai" 
+                    ? "Terima kasih! Anda telah menyelesaikan seluruh tugas operasional hari ini. Laporan akan dibuka kembali besok." 
+                    : "Anda telah menyelesaikan tugas pagi. Silakan istirahat, dan mulai laporan siang pada menu di samping ketika waktunya tiba."}
                 </p>
               </div>
             </div>
@@ -1792,7 +1704,10 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                   </div>
                 </div>
 
-                <button className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-black text-sm py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,32,107,0.39)] hover:shadow-[0_6px_20px_rgba(0,32,107,0.23)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer">
+                <button
+                  onClick={onStartInspection}
+                  className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-black text-sm py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,32,107,0.39)] hover:shadow-[0_6px_20px_rgba(0,32,107,0.23)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+                >
                   MULAI LAPORAN PERJALANAN
                 </button>
               </div>
@@ -1803,7 +1718,7 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
         <aside className="space-y-4">
           {renderKotakSiang()}
           <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-            <h4 className="text-sm font-extrabold text-[#00206B] mb-3">Info Cepat</h4>
+            <h4 className="text-sm font-extrabold text-[#00206B] mb-3">BATAS PENGISIAN LAPORAN</h4>
             <div className="space-y-2 text-xs text-slate-600">
               <div className="flex justify-between">
                 <span className="font-semibold">Batas Buka Pagi</span>
@@ -1823,41 +1738,67 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
 };
 
 export default Beranda;
-```
+
+`
 
 ---
 
-## 18. `src/pages/driver/DetailLaporan.jsx`
+### src/pages/driver/DetailLaporan.jsx
 
-```jsx
+`jsx
 import React from 'react';
 
 const DetailLaporan = ({ report }) => {
-  if (!report) return null;
+  if (!report) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
+        <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center">
+          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        </div>
+        <div>
+          <h3 className="text-xl font-black text-[#00206B]">Data Tidak Ditemukan</h3>
+          <p className="text-sm text-slate-500 font-medium">Sesi terhapus. Silakan kembali ke halaman Riwayat.</p>
+        </div>
+      </div>
+    );
+  }
 
   const sesiPagi = report.trip_sessions?.find(s => s.tipe_sesi === "PAGI");
   const sesiSiang = report.trip_sessions?.find(s => s.tipe_sesi === "SIANG");
-  const inspeksi = report.inspections && report.inspections.length > 0 ? report.inspections[0] : null;
+  const inspeksiPagi = report.inspections?.find(s => s.tipe_sesi === "PAGI");
+  const inspeksiSiang = report.inspections?.find(s => s.tipe_sesi === "SIANG");
 
   const calculateCompleteness = () => {
-    let total = 0;
-    let filled = 0;
+    let totalPercentage = 0;
     const checkFields = ['jam_berangkat_kantor', 'km_berangkat_kantor', 'jam_berangkat_start', 'km_berangkat_start', 'jam_tiba_finish', 'km_tiba_finish', 'jumlah_penumpang', 'jam_tiba_kantor', 'km_tiba_kantor'];
+    const inspFields = ['rem', 'ac', 'lampu', 'klakson', 'wiper', 'lampu_rem', 'bell', 'pintu', 'kebersihan'];
 
+    // 1. Sesi Pagi (Maks 25%)
     if (sesiPagi) {
-      total += checkFields.length;
-      checkFields.forEach(field => { if (sesiPagi[field] !== null && sesiPagi[field] !== undefined) filled++; });
+      let filled = 0;
+      checkFields.forEach(f => { if (sesiPagi[f] !== null && sesiPagi[f] !== undefined) filled++; });
+      totalPercentage += (filled / checkFields.length) * 25;
     }
+    // 2. Inspeksi Pagi (Maks 25%)
+    if (inspeksiPagi) {
+      let filled = 0;
+      inspFields.forEach(f => { if (inspeksiPagi[f]) filled++; });
+      totalPercentage += (filled / inspFields.length) * 25;
+    }
+    // 3. Sesi Siang (Maks 25%)
     if (sesiSiang) {
-      total += checkFields.length;
-      checkFields.forEach(field => { if (sesiSiang[field] !== null && sesiSiang[field] !== undefined) filled++; });
+      let filled = 0;
+      checkFields.forEach(f => { if (sesiSiang[f] !== null && sesiSiang[f] !== undefined) filled++; });
+      totalPercentage += (filled / checkFields.length) * 25;
     }
-    if (inspeksi) {
-      const inspFields = ['rem', 'ac', 'lampu', 'klakson', 'wiper', 'lampu_rem', 'bell', 'pintu', 'kebersihan'];
-      total += inspFields.length;
-      inspFields.forEach(field => { if (inspeksi[field]) filled++; });
+    // 4. Inspeksi Siang (Maks 25%)
+    if (inspeksiSiang) {
+      let filled = 0;
+      inspFields.forEach(f => { if (inspeksiSiang[f]) filled++; });
+      totalPercentage += (filled / inspFields.length) * 25;
     }
-    return total > 0 ? Math.round((filled / total) * 100) : 0;
+
+    return Math.round(totalPercentage);
   };
 
   const completeness = calculateCompleteness();
@@ -1873,7 +1814,7 @@ const DetailLaporan = ({ report }) => {
     }
   };
 
-  const TimelineItem = ({ title, time, odometer, passengers, isLast }) => (
+  const TimelineItem = ({ title, time, odometer, passengers, isLast, foto, nopol }) => (
     <div className={`relative pl-7 ${isLast ? '' : 'pb-8'}`}>
       <div className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full bg-[#00206B] ring-4 ring-slate-50"></div>
       {!isLast && <div className="absolute left-[6px] top-5 bottom-0 w-0.5 bg-slate-100"></div>}
@@ -1881,6 +1822,15 @@ const DetailLaporan = ({ report }) => {
       <div>
         <h4 className="text-xs font-black text-[#00206B] uppercase tracking-wider">{title}</h4>
         <div className="mt-3 grid grid-cols-2 gap-3 sm:max-w-sm">
+          
+          {/* Render Nopol & Merk Kendaraan HANYA jika datanya dikirim (Biasanya di CP1) */}
+          {nopol && (
+            <div className="col-span-2 bg-amber-50 border border-amber-200 p-4 rounded-2xl flex justify-between items-center shadow-sm">
+              <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest">KENDARAAN</span>
+              <span className="text-sm font-black text-amber-900">{nopol}</span>
+            </div>
+          )}
+
           <div className="bg-slate-50 p-4 rounded-2xl">
             <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">WAKTU</span>
             <span className="block text-sm font-black text-slate-800 mt-1">{formatTime(time)} WIB</span>
@@ -1889,10 +1839,21 @@ const DetailLaporan = ({ report }) => {
             <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">ODOMETER</span>
             <span className="block text-sm font-black text-slate-800 mt-1">{odometer ? `${odometer} KM` : '-'}</span>
           </div>
+          
           {passengers !== undefined && passengers !== null && (
             <div className="col-span-2 bg-[#00206B] p-4 rounded-2xl flex justify-between items-center shadow-sm">
               <span className="text-[10px] font-black text-white uppercase tracking-widest">SISWA DIANGKUT</span>
               <span className="text-sm font-black text-white">{passengers} ORANG</span>
+            </div>
+          )}
+
+          {/* Render Bukti Foto Selfie */}
+          {foto && (
+            <div className="col-span-2 mt-1 relative rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm aspect-[4/3]">
+              <div className="absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-black px-2 py-1 rounded shadow-sm z-10 uppercase tracking-widest">
+                ✓ FOTO VALIDASI
+              </div>
+              <img src={foto} alt="Bukti Operasional" className="w-full h-full object-cover" />
             </div>
           )}
         </div>
@@ -1905,6 +1866,40 @@ const DetailLaporan = ({ report }) => {
     { id: 'klakson', label: 'KLAKSON' }, { id: 'wiper', label: 'WIPER' }, { id: 'lampu_rem', label: 'LAMPU REM' },
     { id: 'bell', label: 'BELL' }, { id: 'pintu', label: 'PINTU' }, { id: 'kebersihan', label: 'KEBERSIHAN' }
   ];
+
+  const RenderInspeksiBox = ({ dataInspeksi, title }) => (
+    <div className="mb-8 last:mb-0">
+      <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">{title}</h4>
+      {dataInspeksi ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {inspKeys.map((item, idx) => {
+              const statusValue = dataInspeksi[item.id];
+              const isOk = statusValue === 'OK';
+              return (
+                <div key={idx} className={`flex items-center justify-between px-5 py-4 rounded-2xl ${isOk ? 'bg-slate-50' : 'bg-[#C5221F]'}`}>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${isOk ? 'text-slate-600' : 'text-white'}`}>{item.label}</span>
+                  <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase ${isOk ? 'bg-white text-[#00206B] shadow-sm' : 'bg-white text-[#C5221F]'}`}>
+                    {statusValue || '-'}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          {dataInspeksi.catatan && (
+            <div className="mt-5 bg-slate-50 p-5 rounded-2xl border-l-4 border-[#C5221F]">
+              <span className="text-[10px] font-black text-[#C5221F] uppercase tracking-widest block mb-2">CATATAN KERUSAKAN</span>
+              <p className="text-sm font-bold text-slate-700 leading-relaxed">{dataInspeksi.catatan}</p>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="text-center py-8 text-slate-400 font-black text-[10px] uppercase tracking-widest bg-slate-50 rounded-2xl">
+          DATA INSPEKSI {title} BELUM TERSEDIA
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-10 mt-2">
@@ -1947,10 +1942,12 @@ const DetailLaporan = ({ report }) => {
           <h3 className="text-sm font-black text-[#00206B] uppercase tracking-widest mb-6">SESI BERANGKAT (PAGI)</h3>
           {sesiPagi ? (
             <div>
-              <TimelineItem title="KELUAR GARASI DISHUB" time={sesiPagi.jam_berangkat_kantor} odometer={sesiPagi.km_berangkat_kantor} />
+              {/* CP1: Inject nopol_kendaraan dan foto_awal */}
+              <TimelineItem title="KELUAR GARASI DISHUB" time={sesiPagi.jam_berangkat_kantor} odometer={sesiPagi.km_berangkat_kantor} nopol={sesiPagi.nopol_kendaraan} foto={sesiPagi.foto_awal} />
               <TimelineItem title="TIBA DI TITIK START" time={sesiPagi.jam_berangkat_start} odometer={sesiPagi.km_berangkat_start} />
               <TimelineItem title="TIBA DI SEKOLAH (FINISH)" time={sesiPagi.jam_tiba_finish} odometer={sesiPagi.km_tiba_finish} passengers={sesiPagi.jumlah_penumpang} />
-              <TimelineItem title="KEMBALI KE DISHUB" time={sesiPagi.jam_tiba_kantor} odometer={sesiPagi.km_tiba_kantor} isLast={true} />
+              {/* CP4: Inject foto_akhir */}
+              <TimelineItem title="KEMBALI KE DISHUB" time={sesiPagi.jam_tiba_kantor} odometer={sesiPagi.km_tiba_kantor} foto={sesiPagi.foto_akhir} isLast={true} />
             </div>
           ) : (
              <div className="text-center py-12 text-slate-400 font-black text-xs uppercase tracking-widest bg-slate-50 rounded-2xl">DATA SESI PAGI KOSONG</div>
@@ -1961,10 +1958,12 @@ const DetailLaporan = ({ report }) => {
           <h3 className="text-sm font-black text-[#00206B] uppercase tracking-widest mb-6">SESI PULANG (SIANG)</h3>
           {sesiSiang ? (
             <div>
-              <TimelineItem title="KELUAR GARASI DISHUB" time={sesiSiang.jam_berangkat_kantor} odometer={sesiSiang.km_berangkat_kantor} />
+              {/* CP1: Inject nopol_kendaraan dan foto_awal */}
+              <TimelineItem title="KELUAR GARASI DISHUB" time={sesiSiang.jam_berangkat_kantor} odometer={sesiSiang.km_berangkat_kantor} nopol={sesiSiang.nopol_kendaraan} foto={sesiSiang.foto_awal} />
               <TimelineItem title="TIBA DI TITIK START" time={sesiSiang.jam_berangkat_start} odometer={sesiSiang.km_berangkat_start} />
               <TimelineItem title="TIBA DI SEKOLAH (FINISH)" time={sesiSiang.jam_tiba_finish} odometer={sesiSiang.km_tiba_finish} passengers={sesiSiang.jumlah_penumpang} />
-              <TimelineItem title="KEMBALI KE DISHUB" time={sesiSiang.jam_tiba_kantor} odometer={sesiSiang.km_tiba_kantor} isLast={true} />
+              {/* CP4: Inject foto_akhir */}
+              <TimelineItem title="KEMBALI KE DISHUB" time={sesiSiang.jam_tiba_kantor} odometer={sesiSiang.km_tiba_kantor} foto={sesiSiang.foto_akhir} isLast={true} />
             </div>
           ) : (
              <div className="text-center py-12 text-slate-400 font-black text-xs uppercase tracking-widest bg-slate-50 rounded-2xl">DATA SESI SIANG KOSONG</div>
@@ -1972,52 +1971,26 @@ const DetailLaporan = ({ report }) => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm">
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm mt-6">
         <h3 className="text-sm font-black text-[#00206B] uppercase tracking-widest mb-6">KONDISI KENDARAAN (INSPEKSI)</h3>
-        {inspeksi ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {inspKeys.map((item, idx) => {
-                const statusValue = inspeksi[item.id];
-                const isOk = statusValue === 'OK';
-                return (
-                  <div key={idx} className={`flex items-center justify-between px-5 py-4 rounded-2xl ${isOk ? 'bg-slate-50' : 'bg-[#C5221F]'}`}>
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${isOk ? 'text-slate-600' : 'text-white'}`}>{item.label}</span>
-                    <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase ${isOk ? 'bg-white text-[#00206B] shadow-sm' : 'bg-white text-[#C5221F]'}`}>
-                      {statusValue || '-'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-            
-            {inspeksi.catatan && (
-              <div className="mt-6 bg-slate-50 p-5 rounded-2xl border-l-4 border-[#C5221F]">
-                 <span className="text-[10px] font-black text-[#C5221F] uppercase tracking-widest block mb-2">CATATAN KERUSAKAN</span>
-                 <p className="text-sm font-bold text-slate-700 leading-relaxed">{inspeksi.catatan}</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-12 text-slate-400 font-black text-xs uppercase tracking-widest bg-slate-50 rounded-2xl">
-            DATA INSPEKSI TIDAK TERSEDIA
-          </div>
-        )}
+        <RenderInspeksiBox dataInspeksi={inspeksiPagi} title="SESI PAGI" />
+        <RenderInspeksiBox dataInspeksi={inspeksiSiang} title="SESI SIANG" />
       </div>
     </div>
   );
 };
 
 export default DetailLaporan;
-```
+`
 
 ---
 
-## 19. `src/pages/driver/LaporanDriver.jsx`
+### src/pages/driver/LaporanDriver.jsx
 
-```jsx
+`jsx
 import React, { useState, useRef, useEffect } from "react";
 import { apiService } from "../../services/api";
+import imageCompression from "browser-image-compression";
 
 const dataURLtoFile = (dataurl, filename) => {
   let arr = dataurl.split(","),
@@ -2148,8 +2121,7 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
 
   // Logika Validasi (Jika ada "KURANG", wajib isi catatan)
   const isInspeksiValid = adaKurang ? totalCeklis === 9 && catatan.trim() !== "" : totalCeklis === 9;
-  const isCP1Ready =
-    currentShift === "pagi" ? isInspeksiValid && isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "" : isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "";
+  const isCP1Ready = isInspeksiValid && isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "";
 
   const handlePreSubmit = (e, cpNumber) => {
     e.preventDefault();
@@ -2161,11 +2133,19 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
     setIsProcessing(true);
     try {
       const fileFoto = dataURLtoFile(photoPreview, `selfie_awal.jpg`);
-      const uploadRes = await apiService.uploadSelfie(fileFoto);
 
-      if (currentShift === "pagi") {
-        await apiService.submitInspeksi(laporanId, { ...inspeksi, catatan: adaKurang ? catatan : "" });
-      }
+      // --- PROSES KOMPRESI ---
+      const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
+      const compressedFile = await imageCompression(fileFoto, options);
+
+      // Kirim file yang sudah dikompres
+      const uploadRes = await apiService.uploadSelfie(compressedFile);
+
+      await apiService.submitInspeksi(laporanId, { 
+        ...inspeksi, 
+        tipe_sesi: currentShift.toUpperCase(), // <-- WAJIB KIRIM INI
+        catatan: adaKurang ? catatan : "" 
+      });
 
       const platNomorFinal = `${merkKendaraan.trim()} - ${nopol.trim()}`;
       const cp1Res = await apiService.submitCP1(laporanId, {
@@ -2223,7 +2203,13 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
     setIsProcessing(true);
     try {
       const fileFoto = dataURLtoFile(photoPreview, `selfie_akhir.jpg`);
-      const uploadRes = await apiService.uploadSelfie(fileFoto);
+
+      // --- PROSES KOMPRESI ---
+      const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
+      const compressedFile = await imageCompression(fileFoto, options);
+
+      // Kirim file yang sudah dikompres
+      const uploadRes = await apiService.uploadSelfie(compressedFile);
 
       await apiService.submitCP4(sesiId, {
         km_tiba_kantor: parseInt(odo4),
@@ -2348,7 +2334,6 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
                 </div>
               </div>
 
-              {currentShift === "pagi" && (
                 <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -2389,7 +2374,6 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
                     </div>
                   )}
                 </div>
-              )}
             </div>
 
             {activeCP === 1 &&
@@ -2584,16 +2568,60 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
 };
 
 export default LaporanDriver;
-```
+
+`
 
 ---
 
-## 20. `src/pages/driver/ProfilDriver.jsx`
+### src/pages/driver/ProfilDriver.jsx
 
-```jsx
-import React from "react";
+`jsx
+import React, { useState, useRef } from "react";
+import { apiService } from "../../services/api";
+import imageCompression from "browser-image-compression";
 
-const ProfilDriver = ({ user, onLogout }) => {
+const ProfilDriver = ({ user, onLogout, onUpdateUser }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [fotoPreview, setFotoPreview] = useState(user?.foto_profil || null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      // Kompresi Gambar agar sangat ringan (Max 200KB)
+      const options = {
+        maxSizeMB: 0.2, 
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+
+      // Kirim ke Backend
+      const res = await apiService.updateFotoProfil(compressedFile);
+      
+      // Update UI dengan URL baru dari server
+      if (res && res.foto_profil) {
+        setFotoPreview(res.foto_profil);
+        
+        // Opsional: Update data user di localStorage agar menetap
+        const savedUser = JSON.parse(localStorage.getItem("siclus_user"));
+        if (savedUser) {
+          savedUser.foto_profil = res.foto_profil;
+          localStorage.setItem("siclus_user", JSON.stringify(savedUser));
+          // 🔥 TRIGGER GLOBAL RE-RENDER DI SINI 🔥
+          if (onUpdateUser) onUpdateUser(savedUser);
+        }
+      }
+    } catch (error) {
+      alert("Gagal upload foto profil: " + (error.response?.data?.detail || error.message));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 text-left max-w-3xl mx-auto pb-6 relative">
       <div className="space-y-1">
@@ -2603,29 +2631,60 @@ const ProfilDriver = ({ user, onLogout }) => {
       <div className="bg-white border border-slate-100 rounded-3xl shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-[#00206B] to-blue-500"></div>
         <div className="relative z-10 flex flex-col items-center mt-12 px-6 pb-8">
-          <div className="w-28 h-28 rounded-full bg-white p-1.5 shadow-lg">
-            <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
-              <svg className="w-14 h-14 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+          
+          {/* INPUT FILE HIDDEN */}
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleFileChange} 
+            accept="image/*" 
+            className="hidden" 
+          />
+
+          {/* WADAH AVATAR BISA DIKLIK */}
+          <div 
+            onClick={() => !isUploading && fileInputRef.current.click()}
+            className="w-28 h-28 rounded-full bg-white p-1.5 shadow-lg cursor-pointer group relative"
+            title="Klik untuk ubah foto profil"
+          >
+            <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 relative">
+              {fotoPreview ? (
+                <img src={fotoPreview} alt="Profil" className="w-full h-full object-cover" />
+              ) : (
+                <svg className="w-14 h-14 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              )}
+              
+              {/* OVERLAY LOADING ATAU HOVER */}
+              <div className={`absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white transition-opacity duration-200 ${isUploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                {isUploading ? (
+                   <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Uploading...</span>
+                ) : (
+                   <>
+                     <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                     <span className="text-[8px] font-black uppercase tracking-widest">Ubah Foto</span>
+                   </>
+                )}
+              </div>
             </div>
           </div>
+          
           <h3 className="mt-4 text-2xl font-black text-[#00206B]">{user?.name || "Nama Pengemudi"}</h3>
           <span className="bg-blue-50 text-blue-600 font-bold px-4 py-1.5 rounded-full text-xs mt-2 uppercase tracking-wide border border-blue-100">{user?.role || "Pengemudi"}</span>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+          
+          {/* GRID INFO PENGEMUDI (Tanpa Armada Default) */}
+          <div className="mt-8 grid grid-cols-2 gap-3 w-full">
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left">
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">ID Pengemudi</span>
-              <span className="font-extrabold text-[#00206B] text-sm">{user?.id || "DRV-012"}</span>
+              <span className="font-extrabold text-[#00206B] text-sm truncate block">{user?.id || "-"}</span>
             </div>
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left">
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Trayek Tetap</span>
-              <span className="font-extrabold text-[#00206B] text-sm">{user?.trayek || "TRAYEK A"}</span>
-            </div>
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left md:col-span-2">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Armada Default</span>
-              <span className="font-extrabold text-[#00206B] text-sm">{user?.bus || "S 1772 SP"}</span>
+              <span className="font-extrabold text-[#00206B] text-sm truncate block">{user?.trayek || "-"}</span>
             </div>
           </div>
+          
           <div className="w-full mt-8 pt-6 border-t border-slate-100">
             <button onClick={onLogout} className="w-full bg-[#FCE8E6] hover:bg-[#FAD2CF] transition-colors text-[#C5221F] font-extrabold py-4 px-4 rounded-2xl cursor-pointer">
               🚪 KELUAR APLIKASI (LOGOUT)
@@ -2638,13 +2697,14 @@ const ProfilDriver = ({ user, onLogout }) => {
 };
 
 export default ProfilDriver;
-```
+
+`
 
 ---
 
-## 21. `src/pages/driver/RiwayatDriver.jsx`
+### src/pages/driver/RiwayatDriver.jsx
 
-```jsx
+`jsx
 import React, { useState, useEffect } from "react";
 import { apiService } from "../../services/api";
 
@@ -2659,17 +2719,25 @@ const RiwayatDriver = ({ onViewDetail, user }) => {
       .getRiwayatDriver()
       .then((res) => {
         if (res.data) {
-          const formattedData = res.data.map((item) => ({
-            ...item,
-            driverName: "ANDA",
-            date: item.tanggal,
-            trayek: item.trayek,
-            bus: item.bus,
-            submittedAt: item.trip_sessions && item.trip_sessions.length > 0 ? "SELESAI DIREKAM" : "MENUNGGU PENYELESAIAN",
-          }));
+          const formattedData = res.data.map((item) => {
+            const isShiftClosed = item.trip_sessions?.some(sesi => sesi.jam_tiba_kantor !== null);
+            return {
+              ...item,
+              driverName: "ANDA",
+              date: item.tanggal,
+              trayek: item.trayek,
+              bus: item.bus,
+              submittedAt: isShiftClosed ? "SELESAI DIREKAM" : (item.trip_sessions?.length > 0 ? "SEDANG BERJALAN" : "BELUM DIMULAI"),
+            };
+          });
 
-          formattedData.sort((a, b) => new Date(b.created_at || b.tanggal) - new Date(a.created_at || a.tanggal));
-          setReports(formattedData);
+          // --- KODE FILTER BARU ---
+          // Hanya simpan laporan yang statusnya sudah Selesai Direkam
+          const filteredData = formattedData.filter(report => report.submittedAt === "SELESAI DIREKAM");
+
+          // Urutkan dan set ke state
+          filteredData.sort((a, b) => new Date(b.created_at || b.tanggal) - new Date(a.created_at || a.tanggal));
+          setReports(filteredData);
         }
         setIsLoading(false);
       })
@@ -2743,6 +2811,133 @@ const RiwayatDriver = ({ onViewDetail, user }) => {
 };
 
 export default RiwayatDriver;
-```
+
+`
 
 ---
+
+### src/services/api.js
+
+`jsx
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// jwt token masuk
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("siclus_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+// jwt token keluar
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("siclus_token");
+      localStorage.removeItem("siclus_user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
+);
+
+export const apiService = {
+  // --- AUTH & USER ---
+  login: async (email, password) => {
+    const response = await apiClient.post("/auth/login", { email, password });
+    return response.data;
+  },
+
+  // ==========================================
+  // ZONA DRIVER
+  // ==========================================
+  getJadwalDriver: async () => {
+    const response = await apiClient.get("/driver/jadwal");
+    return response.data;
+  },
+  getRiwayatDriver: async () => {
+    const response = await apiClient.get("/driver/riwayat");
+    return response.data;
+  },
+  updateFotoProfil: async (fileBlob) => {
+    const formData = new FormData();
+    formData.append("foto", fileBlob, "profile.jpg");
+    const response = await apiClient.put("/driver/profil/foto", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+  mulaiLaporan: async (data) => {
+    const response = await apiClient.post("/laporan/mulai", data);
+    return response.data;
+  },
+  submitInspeksi: async (laporanId, data) => {
+    const response = await apiClient.post(`/laporan/inspeksi?laporan_id=${laporanId}`, data);
+    return response.data;
+  },
+  uploadSelfie: async (fileBlob) => {
+    const formData = new FormData();
+    formData.append("foto", fileBlob);
+    const response = await apiClient.post("/laporan/upload-selfie", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+  submitCP1: async (laporanId, data) => {
+    const response = await apiClient.post(`/laporan/sesi/cp1?laporan_id=${laporanId}`, data);
+    return response.data;
+  },
+  submitCP2: async (sesiId, data) => {
+    const response = await apiClient.put(`/laporan/sesi/cp2/${sesiId}`, data);
+    return response.data;
+  },
+  submitCP3: async (sesiId, data) => {
+    const response = await apiClient.put(`/laporan/sesi/cp3/${sesiId}`, data);
+    return response.data;
+  },
+  submitCP4: async (sesiId, data) => {
+    const response = await apiClient.put(`/laporan/sesi/cp4/${sesiId}`, data);
+    return response.data;
+  },
+
+  // ==========================================
+  // ZONA ADMIN
+  // ==========================================
+  getDashboardAdmin: async () => {
+    const response = await apiClient.get("/admin/dashboard");
+    return response.data;
+  },
+  getRekapAdmin: async () => {
+    const response = await apiClient.get("/admin/rekap");
+    return response.data;
+  },
+  getRiwayatHarianAdmin: async () => {
+    const response = await apiClient.get("/admin/riwayat-harian");
+    return response.data;
+  },
+  getUsersAdmin: async () => {
+    const response = await apiClient.get("/admin/users");
+    return response.data;
+  },
+};
+
+export default apiClient;
+
+`
+
+---
+

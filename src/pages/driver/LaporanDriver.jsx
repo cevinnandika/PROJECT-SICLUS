@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { apiService } from "../../services/api";
+import imageCompression from "browser-image-compression";
 
 const dataURLtoFile = (dataurl, filename) => {
   let arr = dataurl.split(","),
@@ -130,8 +131,7 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
 
   // Logika Validasi (Jika ada "KURANG", wajib isi catatan)
   const isInspeksiValid = adaKurang ? totalCeklis === 9 && catatan.trim() !== "" : totalCeklis === 9;
-  const isCP1Ready =
-    currentShift === "pagi" ? isInspeksiValid && isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "" : isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "";
+  const isCP1Ready = isInspeksiValid && isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "";
 
   const handlePreSubmit = (e, cpNumber) => {
     e.preventDefault();
@@ -143,11 +143,19 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
     setIsProcessing(true);
     try {
       const fileFoto = dataURLtoFile(photoPreview, `selfie_awal.jpg`);
-      const uploadRes = await apiService.uploadSelfie(fileFoto);
 
-      if (currentShift === "pagi") {
-        await apiService.submitInspeksi(laporanId, { ...inspeksi, catatan: adaKurang ? catatan : "" });
-      }
+      // --- PROSES KOMPRESI ---
+      const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
+      const compressedFile = await imageCompression(fileFoto, options);
+
+      // Kirim file yang sudah dikompres
+      const uploadRes = await apiService.uploadSelfie(compressedFile);
+
+      await apiService.submitInspeksi(laporanId, { 
+        ...inspeksi, 
+        tipe_sesi: currentShift.toUpperCase(), // <-- WAJIB KIRIM INI
+        catatan: adaKurang ? catatan : "" 
+      });
 
       const platNomorFinal = `${merkKendaraan.trim()} - ${nopol.trim()}`;
       const cp1Res = await apiService.submitCP1(laporanId, {
@@ -205,7 +213,13 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
     setIsProcessing(true);
     try {
       const fileFoto = dataURLtoFile(photoPreview, `selfie_akhir.jpg`);
-      const uploadRes = await apiService.uploadSelfie(fileFoto);
+
+      // --- PROSES KOMPRESI ---
+      const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
+      const compressedFile = await imageCompression(fileFoto, options);
+
+      // Kirim file yang sudah dikompres
+      const uploadRes = await apiService.uploadSelfie(compressedFile);
 
       await apiService.submitCP4(sesiId, {
         km_tiba_kantor: parseInt(odo4),
@@ -330,7 +344,6 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
                 </div>
               </div>
 
-              {currentShift === "pagi" && (
                 <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -371,7 +384,6 @@ const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
                     </div>
                   )}
                 </div>
-              )}
             </div>
 
             {activeCP === 1 &&

@@ -12,17 +12,25 @@ const RiwayatDriver = ({ onViewDetail, user }) => {
       .getRiwayatDriver()
       .then((res) => {
         if (res.data) {
-          const formattedData = res.data.map((item) => ({
-            ...item,
-            driverName: "ANDA",
-            date: item.tanggal,
-            trayek: item.trayek,
-            bus: item.bus,
-            submittedAt: item.trip_sessions && item.trip_sessions.length > 0 ? "SELESAI DIREKAM" : "MENUNGGU PENYELESAIAN",
-          }));
+          const formattedData = res.data.map((item) => {
+            const isShiftClosed = item.trip_sessions?.some(sesi => sesi.jam_tiba_kantor !== null);
+            return {
+              ...item,
+              driverName: "ANDA",
+              date: item.tanggal,
+              trayek: item.trayek,
+              bus: item.bus,
+              submittedAt: isShiftClosed ? "SELESAI DIREKAM" : (item.trip_sessions?.length > 0 ? "SEDANG BERJALAN" : "BELUM DIMULAI"),
+            };
+          });
 
-          formattedData.sort((a, b) => new Date(b.created_at || b.tanggal) - new Date(a.created_at || a.tanggal));
-          setReports(formattedData);
+          // --- KODE FILTER BARU ---
+          // Hanya simpan laporan yang statusnya sudah Selesai Direkam
+          const filteredData = formattedData.filter(report => report.submittedAt === "SELESAI DIREKAM");
+
+          // Urutkan dan set ke state
+          filteredData.sort((a, b) => new Date(b.created_at || b.tanggal) - new Date(a.created_at || a.tanggal));
+          setReports(filteredData);
         }
         setIsLoading(false);
       })

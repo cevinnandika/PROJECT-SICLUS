@@ -12,8 +12,9 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
   const siangHour = shiftRules?.siang || 12;
   const isSiangTime = currentHour >= siangHour;
   const renderKotakSiang = () => {
-    const isDisabled = currentShift === "pagi" || !isSiangTime;
-    const btnText = currentShift === "pagi" ? "SELESAIKAN PAGI DULU" : isSiangTime ? "MULAI LAPORAN SIANG" : `TUNGGU JAM ${siangHour}:00 WIB`;
+    // Tambahkan kondisi currentShift === "selesai"
+    const isDisabled = currentShift === "pagi" || !isSiangTime || currentShift === "selesai";
+    const btnText = currentShift === "selesai" ? "TUGAS SELESAI" : currentShift === "pagi" ? "SELESAIKAN PAGI DULU" : isSiangTime ? "MULAI LAPORAN SIANG" : `TUNGGU JAM ${siangHour}:00 WIB`;
 
     return (
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4 transition-all hover:shadow-md">
@@ -114,7 +115,7 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          {isLaporanLocked && currentShift === "siang" ? (
+          {(isLaporanLocked && currentShift === "siang") || currentShift === "selesai" ? (
             <div className="bg-white border-2 border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center space-y-4 min-h-[300px]">
               <div className="w-20 h-20 bg-[#E6F7ED] text-[#137333] rounded-full flex items-center justify-center border-4 border-[#BCECD2]">
                 <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -122,9 +123,13 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-black text-[#00206B] m-0">Shift Pagi Selesai</h3>
+                <h3 className="text-xl font-black text-[#00206B] m-0">
+                  {currentShift === "selesai" ? "TUGAS HARI INI SELESAI" : "Shift Pagi Selesai"}
+                </h3>
                 <p className="text-sm text-slate-500 font-medium mt-2 max-w-xs mx-auto">
-                  Anda telah menyelesaikan tugas pagi. Silakan istirahat, dan mulai laporan siang pada menu di samping ketika waktunya tiba.
+                  {currentShift === "selesai" 
+                    ? "Terima kasih! Anda telah menyelesaikan seluruh tugas operasional hari ini. Laporan akan dibuka kembali besok." 
+                    : "Anda telah menyelesaikan tugas pagi. Silakan istirahat, dan mulai laporan siang pada menu di samping ketika waktunya tiba."}
                 </p>
               </div>
             </div>
@@ -147,7 +152,10 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                   </div>
                 </div>
 
-                <button className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-black text-sm py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,32,107,0.39)] hover:shadow-[0_6px_20px_rgba(0,32,107,0.23)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer">
+                <button
+                  onClick={onStartInspection}
+                  className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-black text-sm py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,32,107,0.39)] hover:shadow-[0_6px_20px_rgba(0,32,107,0.23)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+                >
                   MULAI LAPORAN PERJALANAN
                 </button>
               </div>
@@ -158,7 +166,7 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
         <aside className="space-y-4">
           {renderKotakSiang()}
           <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-            <h4 className="text-sm font-extrabold text-[#00206B] mb-3">Info Cepat</h4>
+            <h4 className="text-sm font-extrabold text-[#00206B] mb-3">BATAS PENGISIAN LAPORAN</h4>
             <div className="space-y-2 text-xs text-slate-600">
               <div className="flex justify-between">
                 <span className="font-semibold">Batas Buka Pagi</span>

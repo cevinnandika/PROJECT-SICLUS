@@ -43,9 +43,14 @@ function App() {
   const [tripStatus, setTripStatus] = useState("belum_mulai");
   const [driverReports, setDriverReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [currentShift, setCurrentShift] = useState("pagi");
-  const [isLaporanLocked, setIsLaporanLocked] = useState(false);
+  const [currentShift, setCurrentShift] = useState(() => localStorage.getItem("siclus_shift") || "pagi");
+  const [isLaporanLocked, setIsLaporanLocked] = useState(() => localStorage.getItem("siclus_locked") === "true");
   const [shiftRules, setShiftRules] = useState({ pagi: 5, siang: 12 });
+
+  useEffect(() => {
+    localStorage.setItem("siclus_shift", currentShift);
+    localStorage.setItem("siclus_locked", isLaporanLocked);
+  }, [currentShift, isLaporanLocked]);
 
   useEffect(() => {
     const token = localStorage.getItem("siclus_token");
@@ -85,6 +90,8 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("siclus_token");
     localStorage.removeItem("siclus_user");
+    localStorage.removeItem("siclus_shift");
+    localStorage.removeItem("siclus_locked");
     setUser(null);
     setTripStatus("belum_mulai");
     navigate("/login");
@@ -99,6 +106,26 @@ function App() {
   };
 
   const renderLockedScreen = () => {
+    // Tampilan khusus jika sudah kelar semua shift hari ini
+    if (currentShift === "selesai") {
+      return (
+        <div className="flex flex-col items-center justify-center p-8 mt-16 text-center space-y-5 animate-[fadeIn_0.3s]">
+          <div className="w-24 h-24 bg-[#E6F7ED] text-[#137333] rounded-full flex items-center justify-center border-4 border-[#BCECD2] shadow-sm">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          </div>
+          <h2 className="text-2xl font-black text-[#00206B] uppercase m-0">TUGAS SELESAI</h2>
+          <div className="bg-white border-2 border-slate-200 w-full max-w-sm p-4 rounded-2xl shadow-sm">
+            <p className="text-xs font-bold text-slate-500 mb-1">Anda telah menyelesaikan semua perjalanan hari ini.</p>
+            <p className="text-sm font-black text-[#00206B]">Laporan akan dibuka kembali besok pagi.</p>
+          </div>
+          <button onClick={() => navigate("/driver/beranda")} className="mt-2 w-full max-w-xs bg-[#00206B] text-white py-4 rounded-xl font-extrabold text-sm shadow-md">
+            Kembali ke Beranda
+          </button>
+        </div>
+      );
+    }
+
+    // Tampilan jeda antara shift Pagi ke Siang (Existing logic)
     const nextShiftName = currentShift === "siang" ? "Siang" : "Pagi (Besok)";
     const nextShiftTime = currentShift === "siang" ? shiftRules.siang : shiftRules.pagi;
     return (
@@ -163,9 +190,16 @@ function App() {
                         ) : (
                           <Laporan
                             user={user}
+                            currentShift={currentShift}
                             onFinishShift={() => {
-                              setCurrentShift(currentShift === "pagi" ? "siang" : "pagi");
-                              setIsLaporanLocked(currentShift === "pagi");
+                              if (currentShift === "pagi") {
+                                setCurrentShift("siang");
+                                setIsLaporanLocked(true);
+                              } else {
+                                // Jika shift siang beres, gembok laporan sampai besok!
+                                setCurrentShift("selesai");
+                                setIsLaporanLocked(true);
+                              }
                               setTripStatus("belum_mulai");
                               navigate("/driver/beranda");
                             }}
@@ -187,7 +221,7 @@ function App() {
                       }
                     />
                     <Route path="detail-laporan" element={<DetailLaporan report={selectedReport} onBack={() => navigate("/driver/riwayat")} />} />
-                    <Route path="akun" element={<ProfilDriver user={user} onLogout={handleLogout} />} /> {/* ✅ FIX: Pake ProfilDriver */}
+                    <Route path="akun" element={<ProfilDriver user={user} onLogout={handleLogout} onUpdateUser={setUser} />} /> {/* ✅ FIX: Pake ProfilDriver */}
                     <Route path="*" element={<Navigate to="beranda" replace />} />
                   </Routes>
                 </ProtectedRoute>

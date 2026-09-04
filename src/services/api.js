@@ -52,6 +52,14 @@ export const apiService = {
     const response = await apiClient.get("/driver/riwayat");
     return response.data;
   },
+  updateFotoProfil: async (fileBlob) => {
+    const formData = new FormData();
+    formData.append("foto", fileBlob, "profile.jpg");
+    const response = await apiClient.put("/driver/profil/foto", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
   mulaiLaporan: async (data) => {
     const response = await apiClient.post("/laporan/mulai", data);
     return response.data;
