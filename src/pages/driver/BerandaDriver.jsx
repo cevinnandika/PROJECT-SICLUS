@@ -147,11 +147,8 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                   </div>
                 </div>
 
-                <button
-                  onClick={onStartInspection}
-                  className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-extrabold py-4 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-base mt-2"
-                >
-                  MULAI LAPORAN SESI PAGI
+                <button className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-black text-sm py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,32,107,0.39)] hover:shadow-[0_6px_20px_rgba(0,32,107,0.23)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer">
+                  MULAI LAPORAN PERJALANAN
                 </button>
               </div>
             </>

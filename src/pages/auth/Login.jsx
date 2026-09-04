@@ -36,16 +36,14 @@ const Login = ({ onLoginSuccess }) => {
         bus: response.user.bus,
       };
 
-      // 4. Buka gerbang masuk! (Kasih delay dikit biar animasi loadingnya mulus)
       setTimeout(() => {
         onLoginSuccess(userData);
       }, 500);
     } catch (err) {
-      // 5. Nangkep pesan error ASLI dari Backend lu (misal: password salah)
       if (err.response && err.response.data && err.response.data.detail) {
         setError(err.response.data.detail);
       } else {
-        setError("Gagal terhubung ke server pastikan server menyala!");
+        setError("Terjadi kesalahan!");
       }
     } finally {
       setIsLoading(false);
@@ -73,9 +71,7 @@ const Login = ({ onLoginSuccess }) => {
             </svg>
           </div>
           <h2 className="text-4xl sm:text-3xl lg:text-4xl font-black text-[#00206B] tracking-tight mt-3 sm:mt-5 uppercase">SICLUS</h2>
-          <p className="text-[7px] sm:text-xs font-bold text-slate-500 mt-1 tracking-widest leading-relaxed uppercase">
-            School Integrated Check-in & Logbook Unit System
-          </p>
+          <p className="text-[7px] sm:text-xs font-bold text-slate-500 mt-1 tracking-widest leading-relaxed uppercase">School Integrated Check-in & Logbook Unit System</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div className={`overflow-hidden transition-all duration-300 ${error ? "max-h-20 opacity-100" : "max-h-0 opacity-0"}`}>

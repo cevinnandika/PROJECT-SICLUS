@@ -1,6 +1,4 @@
-// src/pages/admin/ManageUsers.jsx
 import React, { useState } from 'react';
-import { dummyUsers } from '../../utils/usersData';
 
 const ManageUsers = ({ onBack }) => {
   const [showForm, setShowForm] = useState(false);
@@ -13,11 +11,8 @@ const ManageUsers = ({ onBack }) => {
     trayek: '',
     bus: ''
   });
+  const [users, setUsers] = useState([]);
   const [successMsg, setSuccessMsg] = useState('');
-
-  // Load users dari localStorage + dummy
-  const localUsers = JSON.parse(localStorage.getItem('siclus_users') || '[]');
-  const allUsers = [...dummyUsers, ...localUsers];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,22 +20,13 @@ const ManageUsers = ({ onBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    const users = JSON.parse(localStorage.getItem('siclus_users') || '[]');
-    
-    if (users.find(u => u.email === formData.email)) {
-      alert('Email sudah terdaftar!');
-      return;
-    }
 
     const newUser = {
       id: `SUP${String(users.length + 1).padStart(3, '0')}`,
       ...formData
     };
 
-    users.push(newUser);
-    localStorage.setItem('siclus_users', JSON.stringify(users));
-    
+    setUsers((prev) => [...prev, newUser]);
     setSuccessMsg(`User ${formData.name} berhasil ditambahkan!`);
     setShowForm(false);
     setFormData({
@@ -101,7 +87,7 @@ const ManageUsers = ({ onBack }) => {
 
       {/* User List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {allUsers.filter(u => u.role !== 'admin').map((user) => (
+        {users.filter(u => u.role !== 'admin').map((user) => (
           <div key={user.id} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg">

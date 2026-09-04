@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const Register = ({ onRegisterSuccess, onBackToLogin }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'admin',
-    phone: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "admin",
+    phone: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      setError('Password tidak cocok!');
+      setError("Password tidak cocok!");
       return;
     }
-    
+
     if (formData.password.length < 6) {
-      setError('Password minimal 6 karakter!');
+      setError("Password minimal 6 karakter!");
       return;
     }
 
     // Simpan ke localStorage (nanti bisa diganti backend)
-    const users = JSON.parse(localStorage.getItem('siclus_users') || '[]');
-    
-    if (users.find(u => u.email === formData.email)) {
-      setError('Email sudah terdaftar!');
+    const users = JSON.parse(localStorage.getItem("siclus_users") || "[]");
+
+    if (users.find((u) => u.email === formData.email)) {
+      setError("Email sudah terdaftar!");
       return;
     }
 
@@ -43,12 +43,12 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
       email: formData.email,
       password: formData.password,
       role: formData.role,
-      phone: formData.phone
+      phone: formData.phone,
     };
 
     users.push(newUser);
-    localStorage.setItem('siclus_users', JSON.stringify(users));
-    
+    localStorage.setItem("siclus_users", JSON.stringify(users));
+
     onRegisterSuccess(newUser);
   };
 
@@ -68,17 +68,11 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
             <p className="text-xs text-slate-400 mt-1">Daftar untuk mengelola sistem</p>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-xs font-bold p-3 rounded-xl mb-4">
-              {error}
-            </div>
-          )}
+          {error && <div className="bg-red-50 border border-red-200 text-red-600 text-xs font-bold p-3 rounded-xl mb-4">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
-                Nama Lengkap
-              </label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Nama Lengkap</label>
               <input
                 type="text"
                 name="name"
@@ -91,9 +85,7 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
-                Email
-              </label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email</label>
               <input
                 type="email"
                 name="email"
@@ -106,9 +98,7 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
-                No. Telepon
-              </label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">No. Telepon</label>
               <input
                 type="tel"
                 name="phone"
@@ -121,9 +111,7 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
-                Password
-              </label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label>
               <input
                 type="password"
                 name="password"
@@ -136,9 +124,7 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
-                Konfirmasi Password
-              </label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Konfirmasi Password</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -160,23 +146,11 @@ const Register = ({ onRegisterSuccess, onBackToLogin }) => {
 
           <div className="mt-6 text-center">
             <p className="text-xs text-slate-400">
-              Sudah punya akun?{' '}
-              <button
-                onClick={onBackToLogin}
-                className="text-[#00206B] font-bold hover:underline cursor-pointer"
-              >
+              Sudah punya akun?{" "}
+              <button onClick={onBackToLogin} className="text-[#00206B] font-bold hover:underline cursor-pointer">
                 Login di sini
               </button>
             </p>
-          </div>
-        </div>
-
-        {/* Dummy Account Info */}
-        <div className="mt-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
-          <p className="text-xs text-white font-bold mb-2">📝 Akun Dummy untuk Testing:</p>
-          <div className="space-y-1 text-[10px] text-slate-200 font-mono">
-            <div>Admin: admin@siclus.id / admin123</div>
-            <div>Supir: budi@siclus.id / budi123</div>
           </div>
         </div>
       </div>

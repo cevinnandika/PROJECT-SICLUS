@@ -1,37 +1,27 @@
-import React from 'react';
+import React from "react";
 
-// 🔥 BELAJAR DISINI: Kita udah nggak butuh onStartSiang di sini, jadi dicabut dari props.
 const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAllLogs }) => {
-  // Ambil data trip terakhir
   const latestTrip = trips[0];
   const latestInspection = inspections[0];
-  
-  // Extract data dari inspection
-  const odometerStart = latestInspection?.odometer || '67008';
-  
-  // Extract data dari trip
+  const odometerStart = latestInspection?.odometer || "";
   const passengerCount = latestTrip?.passengers?.total || latestTrip?.passengers?.seated || 0;
-  const departureTime = latestTrip?.departure || '06:10';
-  const arrivalTime = latestTrip?.arrival || '06:40';
-  const odometerDeparture = latestTrip?.odometerDeparture || '67013';
-  const odometerArrival = latestTrip?.odometerArrival || '67018';
+  const departureTime = latestTrip?.departure || "";
+  const arrivalTime = latestTrip?.arrival || "";
+  const odometerDeparture = latestTrip?.odometerDeparture || "";
+  const odometerArrival = latestTrip?.odometerArrival || "";
 
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto pb-6">
       {/* Title */}
-      <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">
-        RINGKASAN LAPORAN HARIAN
-      </h2>
+      <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0 tracking-wide uppercase">RINGKASAN LAPORAN HARIAN</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content - 2/3 width */}
         <div className="lg:col-span-2 space-y-4">
           {/* Card 1: Perjalanan Pagi */}
           <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 className="text-base font-extrabold text-[#00206B] m-0 pb-2 border-b border-slate-100">
-              Perjalanan Pagi
-            </h3>
-            
+            <h3 className="text-base font-extrabold text-[#00206B] m-0 pb-2 border-b border-slate-100">Perjalanan Pagi</h3>
+
             {/* Start / Mulai Row */}
             <div className="flex items-center gap-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
               <div className="text-slate-400">
@@ -46,7 +36,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
                 <span className="font-bold text-slate-700">Mulai (Dishub)</span>
                 <div className="text-right">
                   <span className="font-black text-[#00206B] block">05:30 WIB</span>
-                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {parseInt(odometerStart).toLocaleString('id-ID')}</span>
+                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {odometerStart ? parseInt(odometerStart).toLocaleString("id-ID") : "-"}</span>
                 </div>
               </div>
             </div>
@@ -63,7 +53,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
                 <span className="font-bold text-slate-700">Berangkat dari Titik Start</span>
                 <div className="text-right">
                   <span className="font-black text-[#00206B] block">{departureTime} WIB</span>
-                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {parseInt(odometerDeparture).toLocaleString('id-ID')}</span>
+                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {odometerDeparture ? parseInt(odometerDeparture).toLocaleString("id-ID") : "-"}</span>
                 </div>
               </div>
             </div>
@@ -80,7 +70,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
                 <span className="font-bold text-slate-700">Selesai (Sekolah)</span>
                 <div className="text-right">
                   <span className="font-black text-[#00206B] block">{arrivalTime} WIB</span>
-                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {parseInt(odometerArrival).toLocaleString('id-ID')}</span>
+                  <span className="text-xs text-slate-400 font-semibold block mt-0.5">KM {odometerArrival ? parseInt(odometerArrival).toLocaleString("id-ID") : "-"}</span>
                 </div>
               </div>
             </div>
@@ -91,7 +81,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
               <span className="text-base font-black text-[#00206B]">{passengerCount} Siswa</span>
             </div>
           </div>
-          
+
           {/* 🔥 BELAJAR DISINI: Card Perjalanan Siang beserta tombolnya 
               UDAH GUE BUMI HANGUSKAN DARI SINI BIAR HALAMANNYA BERSIH! 🧹 */}
         </div>
@@ -101,11 +91,13 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
           {/* Complete Data Check Box */}
           <div className="bg-[#E6F7ED] border border-[#BCECD2] rounded-xl p-4 flex items-center gap-2 text-[#137333] shadow-sm">
             <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+              />
             </svg>
-            <span className="text-sm font-extrabold uppercase tracking-wide">
-              Data Pagi Lengkap
-            </span>
+            <span className="text-sm font-extrabold uppercase tracking-wide">Data Pagi Lengkap</span>
           </div>
 
           {/* Statistics */}
@@ -122,11 +114,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Jarak Tempuh</span>
-                <span className="font-bold text-[#00206B]">
-                  {odometerArrival && odometerStart ? 
-                    (parseInt(odometerArrival) - parseInt(odometerStart)).toLocaleString('id-ID') + ' KM' 
-                    : '30 KM'}
-                </span>
+                <span className="font-bold text-[#00206B]">{odometerArrival && odometerStart ? (parseInt(odometerArrival) - parseInt(odometerStart)).toLocaleString("id-ID") + " KM" : "30 KM"}</span>
               </div>
             </div>
           </div>
@@ -134,7 +122,7 @@ const RingkasanHarian = ({ inspections = [], trips = [], currentShift, onResetAl
           {/* Action Buttons */}
           <div className="space-y-3 pt-2">
             <button
-              onClick={() => alert('Laporan harian berhasil disimpan ke server!')}
+              onClick={() => alert("Laporan harian berhasil disimpan ke server!")}
               className="w-full bg-[#00206B] hover:bg-[#00174E] text-white font-extrabold py-4 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
             >
               SIMPAN LAPORAN HARIAN

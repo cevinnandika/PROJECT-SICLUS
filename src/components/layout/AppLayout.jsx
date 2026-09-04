@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const MobileLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'beranda', onMenuClick = () => {}, user = null }) => {
+const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'beranda', onMenuClick = () => {}, user = null }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const adminMenuItems = [
@@ -88,4 +88,4 @@ const MobileLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 
   );
 };
 
-export default MobileLayout;
+export default AppLayout;

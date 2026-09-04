@@ -1,0 +1,568 @@
+import React, { useState, useRef, useEffect } from "react";
+import { apiService } from "../../services/api";
+
+const dataURLtoFile = (dataurl, filename) => {
+  let arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
+const LiveCamera = ({ onCapture, onCancel }) => {
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [stream, setStream] = useState(null);
+
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        setStream(mediaStream);
+        if (videoRef.current) videoRef.current.srcObject = mediaStream;
+      } catch (err) {
+        alert("Akses kamera ditolak!");
+        onCancel();
+      }
+    };
+    startCamera();
+    return () => {
+      if (stream) stream.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
+  const takePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL("image/jpeg");
+      if (stream) stream.getTracks().forEach((track) => track.stop());
+      onCapture(imageData);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center w-full space-y-3">
+      <div className="relative w-full aspect-[3/4] max-w-sm mx-auto bg-black rounded-lg overflow-hidden border-2 border-[#00206B]">
+        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover transform scale-x-[-1]" />
+        <canvas ref={canvasRef} className="hidden" />
+      </div>
+      <div className="flex gap-2 w-full max-w-sm mx-auto">
+        <button type="button" onClick={takePhoto} className="flex-1 bg-emerald-600 text-white font-bold py-3 rounded shadow-md text-sm">
+          Ambil Foto
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (stream) stream.getTracks().forEach((t) => t.stop());
+            onCancel();
+          }}
+          className="bg-rose-600 text-white font-bold py-3 px-6 rounded shadow-md text-sm"
+        >
+          Batal
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const LaporanDriver = ({ user, currentShift = "pagi", onFinishShift }) => {
+  const [activeCP, setActiveCP] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cpToConfirm, setCpToConfirm] = useState(null); // Fitur Safety Lock
+
+  const [laporanId, setLaporanId] = useState(null);
+  const [sesiId, setSesiId] = useState(null);
+
+  const [merkKendaraan, setMerkKendaraan] = useState("");
+  const [nopol, setNopol] = useState("");
+  const [odoAwal, setOdoAwal] = useState("");
+  const [odo2, setOdo2] = useState("");
+  const [odo3, setOdo3] = useState("");
+  const [odo4, setOdo4] = useState("");
+  const [penumpang, setPenumpang] = useState("");
+  const [catatan, setCatatan] = useState("");
+
+  const [isPhotoSaved, setIsPhotoSaved] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const [inspeksi, setInspeksi] = useState({
+    rem: null,
+    ac: null,
+    lampu: null,
+    klakson: null,
+    wiper: null,
+    lampu_rem: null,
+    bell: null,
+    pintu: null,
+    kebersihan: null,
+  });
+
+  useEffect(() => {
+    const initLaporan = async () => {
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const res = await apiService.mulaiLaporan({
+          tanggal: today,
+          trayek: user?.trayek || "T06",
+          bus: user?.bus || "ARMADA",
+        });
+        setLaporanId(res.id);
+      } catch (err) {
+        console.error("Gagal init laporan:", err);
+      }
+    };
+    initLaporan();
+  }, [user]);
+
+  const handleCeklis = (item, status) => setInspeksi((prev) => ({ ...prev, [item]: status }));
+  const totalCeklis = Object.values(inspeksi).filter((val) => val !== null).length;
+  const adaKurang = Object.values(inspeksi).includes("KURANG");
+
+  // Logika Validasi (Jika ada "KURANG", wajib isi catatan)
+  const isInspeksiValid = adaKurang ? totalCeklis === 9 && catatan.trim() !== "" : totalCeklis === 9;
+  const isCP1Ready =
+    currentShift === "pagi" ? isInspeksiValid && isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "" : isPhotoSaved && odoAwal !== "" && merkKendaraan !== "" && nopol !== "";
+
+  const handlePreSubmit = (e, cpNumber) => {
+    e.preventDefault();
+    setCpToConfirm(cpNumber);
+  };
+
+  const submitCP1 = async () => {
+    if (!laporanId) return alert("Sistem memuat ID Laporan. Tunggu sebentar.");
+    setIsProcessing(true);
+    try {
+      const fileFoto = dataURLtoFile(photoPreview, `selfie_awal.jpg`);
+      const uploadRes = await apiService.uploadSelfie(fileFoto);
+
+      if (currentShift === "pagi") {
+        await apiService.submitInspeksi(laporanId, { ...inspeksi, catatan: adaKurang ? catatan : "" });
+      }
+
+      const platNomorFinal = `${merkKendaraan.trim()} - ${nopol.trim()}`;
+      const cp1Res = await apiService.submitCP1(laporanId, {
+        tipe_sesi: currentShift,
+        nopol_kendaraan: platNomorFinal,
+        km_berangkat_kantor: parseInt(odoAwal),
+        foto_awal: uploadRes.url_foto,
+      });
+
+      setSesiId(cp1Res.data.id);
+      setCpToConfirm(null);
+      setActiveCP(2);
+    } catch (err) {
+      alert("Gagal kirim CP1: " + (err.response?.data?.detail || err.message));
+      setCpToConfirm(null);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const submitCP2 = async () => {
+    setIsProcessing(true);
+    try {
+      await apiService.submitCP2(sesiId, { km_berangkat_start: parseInt(odo2) });
+      setCpToConfirm(null);
+      setActiveCP(3);
+    } catch (err) {
+      alert("Gagal kirim CP2: " + (err.response?.data?.detail || err.message));
+      setCpToConfirm(null);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const submitCP3 = async () => {
+    setIsProcessing(true);
+    try {
+      await apiService.submitCP3(sesiId, {
+        km_tiba_finish: parseInt(odo3),
+        jumlah_penumpang: parseInt(penumpang),
+      });
+      setIsPhotoSaved(false);
+      setPhotoPreview(null);
+      setCpToConfirm(null);
+      setActiveCP(4);
+    } catch (err) {
+      alert("Gagal kirim CP3: " + (err.response?.data?.detail || err.message));
+      setCpToConfirm(null);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const submitCP4 = async () => {
+    setIsProcessing(true);
+    try {
+      const fileFoto = dataURLtoFile(photoPreview, `selfie_akhir.jpg`);
+      const uploadRes = await apiService.uploadSelfie(fileFoto);
+
+      await apiService.submitCP4(sesiId, {
+        km_tiba_kantor: parseInt(odo4),
+        foto_akhir: uploadRes.url_foto,
+      });
+
+      alert("Shift Berhasil Ditutup!");
+      if (onFinishShift) onFinishShift();
+    } catch (err) {
+      alert("Gagal kirim CP4: " + (err.response?.data?.detail || err.message));
+      setCpToConfirm(null);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const CheckItem = ({ id, label }) => (
+    <div className="flex items-center justify-between bg-white border border-slate-200 p-2 rounded-lg shadow-sm">
+      <span className="text-xs font-bold text-[#00206B] truncate w-20">{label}</span>
+      <div className="flex gap-1">
+        <button
+          type="button"
+          onClick={() => handleCeklis(id, "OK")}
+          className={`text-[9px] font-black px-3 py-1.5 rounded transition-colors ${inspeksi[id] === "OK" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-400"}`}
+        >
+          OK
+        </button>
+        <button
+          type="button"
+          onClick={() => handleCeklis(id, "KURANG")}
+          className={`text-[9px] font-black px-2 py-1.5 rounded transition-colors ${inspeksi[id] === "KURANG" ? "bg-amber-500 text-white" : "bg-slate-100 text-slate-400"}`}
+        >
+          KURANG
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6 max-w-5xl mx-auto pb-10 px-4 md:px-0 font-sans">
+      {/* 🔴 CHECK POINT 1 🔴 */}
+      <div className={`border rounded-xl bg-white transition-all ${activeCP === 1 ? "border-[#00206B] shadow-md" : "border-slate-200"}`}>
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 className="font-black text-[#00206B] text-sm tracking-wide">CHECK POINT 1: KELUAR DISHUB</h3>
+          {activeCP > 1 && <span className="text-emerald-600 font-black text-sm">✓</span>}
+        </div>
+
+        {activeCP >= 1 && (
+          <form onSubmit={(e) => handlePreSubmit(e, 1)} className={`p-6 ${activeCP > 1 ? "opacity-60 pointer-events-none" : ""}`}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">TRAYEK PENUGASAN</p>
+                  <h4 className="text-xl font-black text-[#00206B]">{user?.trayek || "T06"}</h4>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">MERK MOBIL</label>
+                    <input
+                      type="text"
+                      required
+                      value={merkKendaraan}
+                      onChange={(e) => setMerkKendaraan(e.target.value.toUpperCase())}
+                      className="w-full p-3 border border-slate-200 rounded-lg font-bold text-[#00206B] outline-none focus:border-[#00206B]"
+                      placeholder="Cth: ISUZU"
+                    />
+                  </div>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">NO. POLISI</label>
+                    <input
+                      type="text"
+                      required
+                      value={nopol}
+                      onChange={(e) => setNopol(e.target.value.toUpperCase())}
+                      className="w-full p-3 border border-slate-200 rounded-lg font-bold text-[#00206B] outline-none focus:border-[#00206B]"
+                      placeholder="Cth: S 1234 XA"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">ODOMETER AWAL (KM)</label>
+                  <input
+                    type="number"
+                    required
+                    value={odoAwal}
+                    onChange={(e) => setOdoAwal(e.target.value)}
+                    className="w-full p-3 border border-slate-200 rounded-lg font-bold text-[#00206B] outline-none focus:border-[#00206B]"
+                    placeholder="Contoh: 67008"
+                  />
+                </div>
+
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">AMBIL FOTO WAJAH</span>
+                  {isCameraOpen ? (
+                    <LiveCamera
+                      onCapture={(img) => {
+                        setPhotoPreview(img);
+                        setIsPhotoSaved(true);
+                        setIsCameraOpen(false);
+                      }}
+                      onCancel={() => setIsCameraOpen(false)}
+                    />
+                  ) : !isPhotoSaved ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsCameraOpen(true)}
+                      className="w-full aspect-[3/4] max-w-sm mx-auto flex flex-col items-center justify-center border-2 border-dashed border-[#00206B] text-[#00206B] bg-blue-50 font-bold text-sm rounded-lg hover:bg-blue-100 transition"
+                    >
+                      Buka Kamera
+                    </button>
+                  ) : (
+                    <div className="relative w-full aspect-[3/4] max-w-sm mx-auto rounded-lg overflow-hidden border-2 border-emerald-500">
+                      <div className="absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-black px-2 py-1 rounded shadow z-10">✓ Foto Tersimpan</div>
+                      <img src={photoPreview} alt="Selfie" className="w-full h-full object-cover" />
+                      <button type="button" onClick={() => setIsCameraOpen(true)} className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+                        Ulangi Foto
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {currentShift === "pagi" && (
+                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 h-full flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 className="text-xs font-black text-slate-600 uppercase tracking-wider">INSPEKSI KENDARAAN</h4>
+                      <p className="text-[10px] font-medium text-slate-400 mt-0.5">Lakukan pemeriksaan fungsional sebelum perjalanan.</p>
+                    </div>
+                    <div className="bg-[#00206B] text-white px-3 py-1.5 rounded-lg text-center shadow-sm">
+                      <span className="block text-xs font-black">{totalCeklis}/9</span>
+                      <span className="block text-[7px] uppercase font-bold">Diperiksa</span>
+                    </div>
+                  </div>
+
+                  {/* BUNGKUS GRID 2 KOLOM HANYA UNTUK CHECKITEM */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <CheckItem id="rem" label="Rem" />
+                    <CheckItem id="ac" label="AC" />
+                    <CheckItem id="lampu" label="Lampu" />
+                    <CheckItem id="klakson" label="Klakson" />
+                    <CheckItem id="wiper" label="Wiper" />
+                    <CheckItem id="lampu_rem" label="Lampu Rem" />
+                    <CheckItem id="bell" label="Bell" />
+                    <CheckItem id="pintu" label="Pintu" />
+                    <CheckItem id="kebersihan" label="Kebersihan" />
+                  </div>
+                  {/* PENUTUP GRID 2 KOLOM DI SINI */}
+
+                  {/* KOTAK CATATAN DI LUAR GRID BIAR FULL WIDTH */}
+                  {adaKurang && (
+                    <div className="mt-4 flex-grow flex flex-col bg-amber-50 p-4 rounded-xl border-2 border-amber-300 shadow-sm transition-all animate-[fadeIn_0.3s]">
+                      <label className="text-[11px] font-black text-amber-800 uppercase tracking-wider block mb-2">Catatan Kerusakan (Wajib)</label>
+                      <textarea
+                        required
+                        value={catatan}
+                        onChange={(e) => setCatatan(e.target.value)}
+                        className="flex-grow w-full min-h-[120px] p-3 border border-amber-300 rounded-lg text-sm text-slate-700 font-medium outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-shadow resize-none"
+                        placeholder="Jelaskan detail komponen yang kurang berfungsi atau rusak..."
+                      ></textarea>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {activeCP === 1 &&
+              (cpToConfirm === 1 ? (
+                <div className="mt-6 p-4 bg-[#FCE8E6] border-2 border-[#C5221F] rounded-xl shadow-sm">
+                  <p className="text-sm font-bold text-[#C5221F] mb-3">Tunggu! Pastikan angka Odometer ({odoAwal} KM) dan Nopol sudah benar. Data tidak bisa diubah setelah terkirim!</p>
+                  <div className="flex gap-3">
+                    <button type="button" onClick={submitCP1} disabled={isProcessing} className="flex-1 bg-[#C5221F] text-white font-black py-3 rounded-lg shadow-md">
+                      Ya, Kirim Permanen
+                    </button>
+                    <button type="button" onClick={() => setCpToConfirm(null)} className="flex-1 bg-white text-[#C5221F] font-bold py-3 rounded-lg border-2 border-[#C5221F]">
+                      Batal / Cek Lagi
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!isCP1Ready || isProcessing}
+                  className={`w-full mt-6 py-4 rounded-xl font-black text-white transition-all shadow-md ${isCP1Ready ? "bg-[#00206B]" : "bg-slate-300"}`}
+                >
+                  KIRIM CP 1 & CATAT JAM KELUAR
+                </button>
+              ))}
+          </form>
+        )}
+      </div>
+
+      {/* 🔴 CHECK POINT 2 🔴 */}
+      <div className={`border rounded-xl bg-white transition-all ${activeCP === 2 ? "border-[#00206B] shadow-md" : "border-slate-200"}`}>
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 className={`font-black text-sm tracking-wide ${activeCP >= 2 ? "text-[#00206B]" : "text-slate-400"}`}>CHECK POINT 2: TIBA DI TITIK START</h3>
+        </div>
+        {activeCP >= 2 && (
+          <form onSubmit={(e) => handlePreSubmit(e, 2)} className={`p-6 ${activeCP > 2 ? "opacity-60 pointer-events-none" : ""}`}>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">ODOMETER HALTE PERTAMA (KM)</label>
+            <input
+              type="number"
+              required
+              value={odo2}
+              onChange={(e) => setOdo2(e.target.value)}
+              className="w-full md:w-1/2 p-3 border border-slate-200 rounded-lg font-bold text-[#00206B] outline-none"
+              placeholder="0"
+            />
+
+            {activeCP === 2 &&
+              (cpToConfirm === 2 ? (
+                <div className="mt-4 p-4 bg-[#FCE8E6] border-2 border-[#C5221F] rounded-xl shadow-sm md:w-1/2">
+                  <p className="text-sm font-bold text-[#C5221F] mb-3">Odometer Halte = {odo2} KM. Lanjutkan?</p>
+                  <div className="flex gap-3">
+                    <button type="button" onClick={submitCP2} disabled={isProcessing} className="flex-1 bg-[#C5221F] text-white font-bold py-2 rounded-lg">
+                      Kirim
+                    </button>
+                    <button type="button" onClick={() => setCpToConfirm(null)} className="flex-1 bg-white text-[#C5221F] font-bold py-2 rounded-lg border border-[#C5221F]">
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button type="submit" className="block w-full md:w-1/2 mt-4 bg-[#00206B] text-white font-bold py-3 rounded-lg shadow-md">
+                  SIMPAN & CATAT WAKTU TIBA
+                </button>
+              ))}
+          </form>
+        )}
+      </div>
+
+      {/* 🔴 CHECK POINT 3 🔴 */}
+      <div className={`border rounded-xl bg-white transition-all ${activeCP === 3 ? "border-[#00206B] shadow-md" : "border-slate-200"}`}>
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 className={`font-black text-sm tracking-wide ${activeCP >= 3 ? "text-[#00206B]" : "text-slate-400"}`}>CHECK POINT 3: TIBA DI TITIK FINISH</h3>
+        </div>
+        {activeCP >= 3 && (
+          <form onSubmit={(e) => handlePreSubmit(e, 3)} className={`p-6 grid grid-cols-1 md:grid-cols-2 gap-6 ${activeCP > 3 ? "opacity-60 pointer-events-none" : ""}`}>
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase block mb-2">ODOMETER SEKOLAH (KM)</label>
+              <input type="number" required value={odo3} onChange={(e) => setOdo3(e.target.value)} className="w-full p-3 border border-slate-200 rounded-lg font-bold text-[#00206B]" placeholder="0" />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase block mb-2">TOTAL SISWA DIANGKUT</label>
+              <input
+                type="number"
+                required
+                value={penumpang}
+                onChange={(e) => setPenumpang(e.target.value)}
+                className="w-full p-3 border border-slate-200 rounded-lg font-bold text-[#00206B]"
+                placeholder="0"
+              />
+            </div>
+
+            {activeCP === 3 && (
+              <div className="col-span-1 md:col-span-2">
+                {cpToConfirm === 3 ? (
+                  <div className="mt-2 p-4 bg-[#FCE8E6] border-2 border-[#C5221F] rounded-xl shadow-sm">
+                    <p className="text-sm font-bold text-[#C5221F] mb-3">
+                      Odometer Akhir {odo3} KM & Jumlah {penumpang} Siswa. Data Benar?
+                    </p>
+                    <div className="flex gap-3">
+                      <button type="button" onClick={submitCP3} disabled={isProcessing} className="flex-1 bg-[#C5221F] text-white font-bold py-2 rounded-lg">
+                        Kirim Permanen
+                      </button>
+                      <button type="button" onClick={() => setCpToConfirm(null)} className="flex-1 bg-white text-[#C5221F] font-bold py-2 rounded-lg border border-[#C5221F]">
+                        Cek Lagi
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button type="submit" className="w-full mt-2 bg-[#00206B] text-white font-bold py-3 rounded-lg shadow-md">
+                    SIMPAN & CATAT WAKTU SELESAI
+                  </button>
+                )}
+              </div>
+            )}
+          </form>
+        )}
+      </div>
+
+      {/* 🔴 CHECK POINT 4 🔴 */}
+      <div className={`border rounded-xl bg-white transition-all ${activeCP === 4 ? "border-[#C5221F] shadow-md" : "border-slate-200"}`}>
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 className={`font-black text-sm tracking-wide ${activeCP >= 4 ? "text-[#00206B]" : "text-slate-400"}`}>CHECK POINT 4: KEMBALI KE DISHUB</h3>
+        </div>
+        {activeCP === 4 && (
+          <form onSubmit={(e) => handlePreSubmit(e, 4)} className="p-6 space-y-6">
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase block mb-2">ODOMETER AKHIR GARASI (KM)</label>
+              <input
+                type="number"
+                required
+                value={odo4}
+                onChange={(e) => setOdo4(e.target.value)}
+                className="w-full md:w-1/2 p-3 border border-slate-200 rounded-lg font-bold text-[#00206B]"
+                placeholder="0"
+              />
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm md:w-1/2">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">FOTO WAJAH AKHIR SHIFT</span>
+              {isCameraOpen ? (
+                <LiveCamera
+                  onCapture={(img) => {
+                    setPhotoPreview(img);
+                    setIsPhotoSaved(true);
+                    setIsCameraOpen(false);
+                  }}
+                  onCancel={() => setIsCameraOpen(false)}
+                />
+              ) : !isPhotoSaved ? (
+                <button
+                  type="button"
+                  onClick={() => setIsCameraOpen(true)}
+                  className="w-full aspect-[3/4] max-w-sm mx-auto flex flex-col items-center justify-center border-2 border-dashed border-[#00206B] text-[#00206B] bg-blue-50 font-bold hover:bg-blue-100 transition"
+                >
+                  Buka Kamera Akhir
+                </button>
+              ) : (
+                <div className="relative w-full aspect-[3/4] max-w-sm mx-auto rounded-lg overflow-hidden border-2 border-emerald-500">
+                  <img src={photoPreview} alt="Selfie" className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => setIsCameraOpen(true)} className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+                    Ulangi Foto
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {cpToConfirm === 4 ? (
+              <div className="p-4 bg-[#FCE8E6] border-2 border-[#C5221F] rounded-xl shadow-sm">
+                <p className="text-sm font-bold text-[#C5221F] mb-3">Tutup Laporan Harian dengan Odometer Garasi {odo4} KM?</p>
+                <div className="flex gap-3">
+                  <button type="button" onClick={submitCP4} disabled={isProcessing} className="flex-1 bg-[#C5221F] text-white font-black py-4 rounded-xl shadow-md">
+                    TUTUP SHIFT SEKARANG
+                  </button>
+                  <button type="button" onClick={() => setCpToConfirm(null)} className="flex-1 bg-white text-[#C5221F] font-bold py-4 rounded-xl border-2 border-[#C5221F]">
+                    BATAL
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                disabled={!isPhotoSaved}
+                className={`w-full py-4 rounded-xl shadow-md font-black text-white transition-all ${!isPhotoSaved ? "bg-slate-300" : "bg-[#C5221F] hover:bg-red-800"}`}
+              >
+                SUBMIT FINAL & TUTUP SHIFT
+              </button>
+            )}
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LaporanDriver;
