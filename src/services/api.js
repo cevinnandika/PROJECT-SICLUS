@@ -96,20 +96,32 @@ export const apiService = {
   // ==========================================
   // ZONA ADMIN
   // ==========================================
-  getDashboardAdmin: async () => {
-    const response = await apiClient.get("/admin/dashboard");
-    return response.data;
+  getDashboardAdmin: async () => (await apiClient.get("/admin/dashboard")).data,
+  getRekapAdmin: async () => (await apiClient.get("/admin/rekap")).data,
+  getRiwayatHarianAdmin: async () => (await apiClient.get("/admin/riwayat-harian")).data,
+  exportExcelAdmin: async () => {
+    const res = await apiClient.get("/admin/export-excel", { responseType: 'blob' });
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `Rekap_Operasional_${new Date().toISOString().split('T')[0]}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   },
-  getRekapAdmin: async () => {
-    const response = await apiClient.get("/admin/rekap");
-    return response.data;
-  },
-  getRiwayatHarianAdmin: async () => {
-    const response = await apiClient.get("/admin/riwayat-harian");
-    return response.data;
-  },
-  getUsersAdmin: async () => {
-    const response = await apiClient.get("/admin/users");
+  getUsersAdmin: async () => (await apiClient.get("/admin/users")).data,
+  createUserAdmin: async (data) => (await apiClient.post("/admin/users", data)).data,
+  updateUserAdmin: async (id, data) => (await apiClient.put(`/admin/users/${id}`, data)).data,
+  deleteUserAdmin: async (id) => (await apiClient.delete(`/admin/users/${id}`)).data,
+  getJadwalAdmin: async () => (await apiClient.get("/admin/jadwal")).data,
+  createJadwalAdmin: async (data) => (await apiClient.post("/admin/jadwal", data)).data,
+  updateJadwalAdmin: async (id, data) => (await apiClient.put(`/admin/jadwal/${id}`, data)).data,
+  updateFotoProfilAdmin: async (fileBlob) => {
+    const formData = new FormData();
+    formData.append("foto", fileBlob, "profile_admin.jpg"); // Diberi nama default agar lolos validasi ekstensi backend
+    const response = await apiClient.put("/admin/profil/foto", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return response.data;
   },
 };

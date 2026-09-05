@@ -4,9 +4,10 @@ const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'be
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const adminMenuItems = [
-    { id: 'riwayatdriver', label: 'Riwayat Driver', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /> },
-    { id: 'rekap', label: 'Rekap', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8 13v-1m4 1v-3m4 3V8M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /> },
-    { id: 'kelolauser', label: 'Kelola User', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /> },
+    { id: 'dashboard', label: 'Beranda', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" /> },
+    { id: 'riwayat', label: 'Riwayat Harian', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /> },
+    { id: 'rekap', label: 'Rekap Data', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /> },
+    { id: 'kelola', label: 'Kelola', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /> },
     { id: 'akun', label: 'Akun', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> }
   ];
 
@@ -50,22 +51,31 @@ const AppLayout = ({ children, title = 'SICLUS', onBack = null, activeMenu = 'be
             );
           })}
         </nav>
-        <div className="p-3 mb-2 border-t border-white/5 mt-auto">
+        {/* BLOK PROFIL SIDEBAR POJOK KIRI BAWAH */}
+        <div className="p-3 mb-2 border-t border-slate-800 mt-auto">
           <div onClick={() => onMenuClick('akun')} className="flex items-center p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 cursor-pointer transition-colors group" title={!isSidebarOpen ? 'Buka Akun' : ''}>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden bg-slate-100 border border-white/10">
-              {user?.foto_profil ? (
-                <img src={user.foto_profil} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-              )}
-            </div>
+            {/* RENDER AVATAR AMAN */}
+            {user?.foto_profil ? (
+              <img 
+                src={user.foto_profil} 
+                alt="Avatar" 
+                className="w-10 h-10 rounded-full object-cover border border-slate-600 bg-white flex-shrink-0" 
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#00206B] to-blue-500 text-white flex items-center justify-center font-black text-sm shadow-sm border border-slate-600 flex-shrink-0">
+                {/* Pengecekan multi-key untuk nama dari database */}
+                {(user?.nama_lengkap || user?.nama || user?.name || "A").charAt(0).toUpperCase()}
+              </div>
+            )}
+
+            {/* RENDER NAMA AMAN */}
             <div className={`overflow-hidden transition-all duration-300 flex flex-col justify-center ${isSidebarOpen ? 'ml-3 w-full opacity-100' : 'w-0 opacity-0'}`}>
-              <span className="text-sm font-bold text-white truncate group-hover:text-cyan-200 transition-colors">{user?.name || 'Profil Saya'}</span>
-              <span className="text-[10px] text-slate-400 truncate uppercase tracking-widest mt-0.5">{user?.role || 'Pengemudi'}</span>
+              <p className="text-sm font-bold text-white truncate w-full group-hover:text-cyan-200 transition-colors m-0">
+                {user?.nama_lengkap || user?.nama || user?.name || "Pengguna"}
+              </p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-widest truncate w-full mt-0.5 m-0">
+                {user?.role || "USER"}
+              </p>
             </div>
           </div>
         </div>

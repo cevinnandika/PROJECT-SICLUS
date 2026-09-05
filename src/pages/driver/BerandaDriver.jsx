@@ -54,7 +54,7 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
       <div className="space-y-6 text-left max-w-5xl mx-auto pb-6">
         <header className="space-y-1">
           <h2 className="text-2xl md:text-3xl font-black text-[#00206B] m-0">
-            Selamat bertugas, <span className="block text-3xl md:text-4xl font-black">{activeUser?.name || "Pengemudi"}</span>
+            Selamat bertugas, <span className="block text-3xl md:text-4xl font-black">{activeUser?.nama_lengkap || activeUser?.nama || activeUser?.name || "Pengemudi"}</span>
           </h2>
           <p className="text-sm text-slate-400 font-semibold">{currentDate}</p>
         </header>
@@ -72,8 +72,8 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
             <div className="flex items-center gap-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
               <div className="w-12 h-12 rounded-lg bg-[#00206B] text-white flex items-center justify-center font-black text-xl shadow-sm">A</div>
               <div>
-                <h4 className="text-base font-extrabold text-[#00206B] m-0">{activeUser?.trayek || "Trayek A"}</h4>
-                <p className="text-sm text-slate-500 font-medium mt-0.5">{activeUser?.bus || "Bus 07"}</p>
+                <h4 className="text-base font-extrabold text-[#00206B] m-0">{activeUser?.trayek || "Belum ada trayek"}</h4>
+                <p className="text-sm text-slate-500 font-medium mt-0.5">{activeUser?.bus || "Belum ada armada"}</p>
               </div>
             </div>
 
@@ -108,7 +108,9 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto pb-6">
       <header className="space-y-1">
-        <h2 className="text-3xl md:text-4xl font-black text-[#00206B] m-0">{activeUser?.name || "Pengemudi"}</h2>
+        <h2 className="text-3xl md:text-4xl font-black text-[#00206B] m-0">
+          {activeUser?.nama_lengkap || activeUser?.nama || activeUser?.name || "Pengemudi"}
+        </h2>
         <p className="text-sm text-slate-500 font-bold">Pengemudi Angkutan Sekolah</p>
         <p className="text-xs text-slate-400 font-semibold mt-1">{currentDate}</p>
       </header>
@@ -147,8 +149,8 @@ const Beranda = ({ activeUser, onQuickAction, onLogout, tripStatus = "belum_mula
                     <span className="inline-block bg-slate-100 text-slate-500 font-extrabold text-xs px-3 py-1.5 rounded mt-1.5">BELUM DIMULAI</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-base font-extrabold text-[#00206B] block">{activeUser?.trayek || "TRAYEK A"}</span>
-                    <span className="text-xs text-slate-400 font-semibold block mt-0.5">{activeUser?.bus || "S 1772 SP"}</span>
+                    <span className="text-base font-extrabold text-[#00206B] block">{activeUser?.trayek || "Belum ada trayek"}</span>
+                    <span className="text-xs text-slate-400 font-semibold block mt-0.5">{activeUser?.bus || "Belum ada armada"}</span>
                   </div>
                 </div>
 

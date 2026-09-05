@@ -10,9 +10,10 @@ import BottomNav from "./components/layout/BottomNav";
 import Login from "./pages/auth/Login";
 
 // Pages - Admin
+import BerandaAdmin from "./pages/admin/BerandaAdmin";
 import RiwayatAdmin from "./pages/admin/RiwayatAdmin";
-import ManageUser from "./pages/admin/ManageDriver";
-import RekapPage from "./pages/admin/RekapDriver";
+import ManageDriver from "./pages/admin/ManageDriver";
+import RekapAdmin from "./pages/admin/RekapDriver";
 import ProfilAdmin from "./pages/admin/ProfilAdmin";
 
 // Pages - Driver
@@ -28,7 +29,7 @@ const ProtectedRoute = ({ user, allowedRole, children }) => {
     return <Navigate to="/login" replace />;
   }
   if (user.role.toLowerCase() !== allowedRole.toLowerCase()) {
-    return <Navigate to={user.role.toLowerCase() === "admin" ? "/admin/riwayat" : "/driver/beranda"} replace />;
+    return <Navigate to={user.role.toLowerCase() === "admin" ? "/admin/dashboard" : "/driver/beranda"} replace />;
   }
   return children;
 };
@@ -83,7 +84,7 @@ function App() {
       }
       navigate("/driver/beranda");
     } else {
-      navigate("/admin/riwayat");
+      navigate("/admin/dashboard");
     }
   };
 
@@ -100,8 +101,8 @@ function App() {
   const handleMenuClick = (menuId) => {
     const baseRoute = user?.role?.toLowerCase() === "admin" ? "/admin" : "/driver";
     let targetRoute = menuId;
-    if (menuId === "riwayatdriver") targetRoute = "riwayat";
-    if (menuId === "kelolauser") targetRoute = "kelola-user";
+    if (menuId === "riwayatdriver") targetRoute = "dashboard";
+    if (menuId === "kelolauser") targetRoute = "kelola";
     navigate(`${baseRoute}/${targetRoute}`);
   };
 
@@ -158,7 +159,7 @@ function App() {
         <AppLayout user={user} title={"SICLUS"} onBack={location.pathname.includes("detail") ? () => navigate(-1) : null} activeMenu={location.pathname.split("/").pop()} onMenuClick={handleMenuClick}>
           <Routes>
             {/* ZONA KHUSUS DRIVER */}
-            <Route path="/" element={<Navigate to={user?.role?.toLowerCase() === "admin" ? "/admin/riwayat" : "/driver/beranda"} replace />} />
+            <Route path="/" element={<Navigate to={user?.role?.toLowerCase() === "admin" ? "/admin/dashboard" : "/driver/beranda"} replace />} />
             <Route
               path="/driver/*"
               element={
@@ -222,7 +223,7 @@ function App() {
                     />
                     <Route path="detail-laporan" element={<DetailLaporan report={selectedReport} onBack={() => navigate("/driver/riwayat")} />} />
                     <Route path="akun" element={<ProfilDriver user={user} onLogout={handleLogout} onUpdateUser={setUser} />} /> {/* ✅ FIX: Pake ProfilDriver */}
-                    <Route path="*" element={<Navigate to="beranda" replace />} />
+                    <Route path="*" element={<Navigate to="/driver/beranda" replace />} />
                   </Routes>
                 </ProtectedRoute>
               }
@@ -234,11 +235,14 @@ function App() {
               element={
                 <ProtectedRoute user={user} allowedRole="admin">
                   <Routes>
-                    <Route path="riwayat" element={<RiwayatAdmin user={user} />} />
-                    <Route path="kelola-user" element={<ManageUser onBack={() => navigate("/admin/riwayat")} />} />
-                    <Route path="rekap" element={<RekapPage />} />
-                    <Route path="akun" element={<ProfilAdmin user={user} onLogout={handleLogout} />} /> {/* ✅ FIX: Pake ProfilAdmin */}
-                    <Route path="*" element={<Navigate to="riwayat" replace />} />
+                    <Route path="dashboard" element={<BerandaAdmin user={user} />} />
+                    <Route path="riwayat" element={<RiwayatAdmin />} />
+                    <Route path="rekap" element={<RekapAdmin user={user} />} />
+                    <Route path="kelola" element={<ManageDriver onBack={() => navigate("/admin/dashboard")} />} />
+                    <Route path="akun" element={<ProfilAdmin user={user} onLogout={handleLogout} />} />
+                    
+                    {/* FIX KRUSIAL: Gunakan Absolute Path "/admin/dashboard" BUKAN "dashboard" */}
+                    <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>
               }

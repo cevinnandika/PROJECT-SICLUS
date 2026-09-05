@@ -101,7 +101,9 @@ const ProfilDriver = ({ user, onLogout, onUpdateUser }) => {
             </div>
           </div>
 
-          <h3 className="mt-4 text-2xl font-black text-[#00206B]">{user?.name || "Nama Pengemudi"}</h3>
+          <h3 className="mt-4 text-2xl font-black text-[#00206B]">
+            {user?.nama_lengkap || user?.nama || user?.name || "Nama Pengemudi"}
+          </h3>
           <span className="bg-blue-50 text-blue-600 font-bold px-4 py-1.5 rounded-full text-xs mt-2 uppercase tracking-wide border border-blue-100">{user?.role || "Pengemudi"}</span>
 
           {/* GRID INFO PENGEMUDI (Tanpa Armada Default) */}
