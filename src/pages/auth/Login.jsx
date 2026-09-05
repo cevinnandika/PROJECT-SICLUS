@@ -34,6 +34,7 @@ const Login = ({ onLoginSuccess }) => {
         role: response.user.role,
         trayek: response.user.trayek,
         bus: response.user.bus,
+        foto_profil: response.user.foto_profil,
       };
 
       setTimeout(() => {
